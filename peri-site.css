@@ -7,7 +7,8 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #187a
 [hidden]{display:none!important}
 .skip{position:absolute;top:-100px;left:12px;z-index:12;background:white;padding:10px}.skip:focus{top:10px}
 header{height:80px;position:sticky;top:0;z-index:5;background:#fff;display:flex;align-items:center;gap:32px;padding:0 24px}
-.logo{display:block;height:62px;width:auto}.logo-link{display:flex;align-items:center;text-decoration:none;gap:8px;font:26px/1 var(--display);white-space:nowrap}
+.logo-link{display:flex;align-items:center;text-decoration:none;gap:8px;font:26px/1 var(--display);white-space:nowrap;flex:none}
+.logo-mark{display:block;width:40px;height:42px;overflow:hidden}.logo-mark img{display:block;width:40px;height:auto}
 .nav,.account{display:flex;align-items:center;gap:18px;font-weight:750}.account{margin-left:auto;white-space:nowrap}.nav a,.account a{text-decoration:none}
 .plain{border:0;background:none;color:inherit;cursor:pointer;padding:0;font-weight:inherit}
 .pill{display:inline-flex;align-items:center;justify-content:center;min-height:47px;padding:8px 26px;border:0;border-radius:999px;text-decoration:none;background:var(--orange);color:var(--ink);font:700 1rem/1.1 system-ui,sans-serif;text-transform:uppercase;cursor:pointer}
@@ -59,9 +60,9 @@ dialog{width:min(calc(100% - 28px),560px);max-height:90svh;border:0;border-radiu
 .choices{display:flex;flex-wrap:wrap;gap:10px;margin:15px 0}.choice{background:white;border:1px solid #aaa;border-radius:99px;padding:8px 13px;cursor:pointer}.choice[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:white}
 .inner-hero{position:relative;min-height:355px;display:grid;align-items:center;padding:32px max(24px,calc((100% - 1280px)/2));background:linear-gradient(90deg,#000b,#0002),var(--cover) center/cover,#4c291e;color:white}
 .inner-hero p{max-width:550px}.listing{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.listing article,.location-card{padding:20px;background:var(--cream);border-radius:10px}.listing article h3,.location-card h3{margin-top:0}.locations{display:grid;grid-template-columns:1fr 1fr;gap:21px}.location-card address{font-style:normal}.menu-search{display:block;margin:14px 0 20px}.menu-search input{display:block;margin-top:5px;border:1px solid #777;border-radius:6px;padding:9px 12px;width:min(100%,340px)}
-@media(max-width:1120px){header{gap:18px}.nav,.account{gap:10px}.logo-link span{display:none}}
+@media(max-width:1120px){header{gap:18px}.nav,.account{gap:10px}.logo-link .logo-name{display:none}}
 @media(max-width:900px){
-  header{height:56px;padding-inline:12px;gap:6px}.logo{height:45px}.logo-link span{display:inline;font-size:20px}.nav,.account{display:none}.mobile-toggle{display:block;border:1px solid #aaa;border-radius:100%;width:41px;height:41px;background:white;font-size:22px;cursor:pointer}.order-float{position:static;margin-left:auto;min-width:0;min-height:38px;padding-inline:13px;background:var(--ink);color:white;font-size:.9rem}
+  header{height:56px;padding-inline:12px;gap:8px}.logo-link .logo-name{display:inline;font-size:20px}.nav,.account{display:none}.mobile-toggle{display:grid;place-items:center;flex:0 0 40px;border:1px solid #aaa;border-radius:100%;height:40px;background:white;font-size:20px;cursor:pointer}.hero .order-float,header .order-float{position:static;margin-left:auto;min-width:0;min-height:38px;padding-inline:13px;background:var(--ink);color:white;font-size:.85rem;white-space:nowrap;flex:none}
   .hero{min-height:calc(100svh - 56px)}.hero h1{font-size:clamp(53px,12vw,95px)}
   .feature-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.campaign-grid{gap:20px}.category-grid,.footer-grid{gap:13px}.footer-grid{grid-template-columns:repeat(3,1fr)}
 }
@@ -69,7 +70,7 @@ dialog{width:min(calc(100% - 28px),560px);max-height:90svh;border:0;border-radiu
   .wrap{width:calc(100% - 32px)}.campaign{padding:48px 0 62px}.campaign h2{margin-bottom:28px}.campaign-grid,.feature-grid,.split,.locations,.listing{grid-template-columns:1fr}.campaign-grid{gap:22px}.campaign-card:first-child{--tilt:0deg}.campaign-card:nth-child(2){--tilt:-2deg}.campaign-card:last-child{--tilt:2deg}.campaign-card img{aspect-ratio:1}.section{padding-block:46px}.feature-grid{gap:9px}.dish{display:grid;grid-template-columns:104px 1fr}.dish img{height:100%;aspect-ratio:auto}.dish .card-body{padding:12px}.dish .details{margin-bottom:8px}.dish .pill{min-height:34px;padding:6px}.category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.category-card span{padding:11px 5px;font-size:.85rem}.split img{grid-row:1;min-height:0;aspect-ratio:1}.photo-banner{min-height:460px}.footer-grid{grid-template-columns:1fr;gap:10px}.footer-grid section{border-bottom:1px solid #444;padding-bottom:8px}.heat-float{width:50px;height:50px;font-size:24px;right:9px;bottom:9px}
 }
 @media(max-width:600px){
-  .logo-link{gap:5px}.logo-link span{font-size:22px}.logo{height:41px}
+  .logo-link{gap:5px}.logo-link .logo-name{font-size:22px}.logo-mark{width:28px;height:33px}.logo-mark img{width:30px}
   .hero-art{background-size:240px 100%}.hero-paper{inset:35% -29% -2% -11%;transform:rotate(-11deg)}
   .hero-plate{width:max(116vw,53svh);top:-4%;left:-43%}
   .hero-side{width:31%;border-width:4px}.hero-side-top{display:none}.hero-side-middle{right:13%;top:67%}.hero-side-bottom{right:62%;top:78%}
@@ -111,9 +112,16 @@ dialog[data-mode="navigation"]{position:fixed;inset:0 0 0 auto;margin:0;height:1
   dialog h2{font-size:clamp(32px,9vw,48px)}
   #dialog .locations{grid-template-columns:1fr}
 }
-@media(max-width:360px){.logo-link span{font-size:18px}.hero h1{font-size:45px}.order-float{padding-inline:10px}}
+@media(max-width:360px){.logo-link .logo-name{font-size:18px}.hero h1{font-size:45px}header .order-float{padding-inline:10px}}
 .campaign-band{overflow:clip}
 .campaign-card .card-body{min-height:270px}
+.campaign-card .card-body p{max-width:29ch}
+.featured{padding-bottom:46px}.categories{padding-top:46px}
+.dish .card-body h3{font-size:1.05rem;overflow-wrap:anywhere}
+.category-card>span{border-top:1px solid #0d0d0d12}
+.inner-hero h1{font-size:clamp(3.4rem,8vw,7rem);max-width:16ch}
+.inner-hero p{font-size:clamp(1rem,2vw,1.2rem)}
+.choice:hover{border-color:var(--orange);box-shadow:inset 0 0 0 1px var(--orange)}
 .campaign-card:nth-child(2){z-index:1}
 .campaign-card:first-child,.campaign-card:last-child{position:relative;top:42px}
 .campaign .campaign-title{font-size:clamp(54px,7.6vw,108px)}

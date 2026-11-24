@@ -15,7 +15,7 @@ const photos = {
   bogo: product('HstHkxn8yNmi-2aM2x1CGJ5R3'),
   sides: image('9f423590-be94-4ef4-90de-e4c56623666b'),
   shakes: image('71bfaa28-fb90-41ff-a5a7-d05ece092ebe.jpg'),
-  catering: image('d6adb646-cd38-45ef-8f8e-b54b-42eca19a12c7',1920),
+  catering: product('UB0AHzrjjUvY-ZmnliwFZvvkb'),
   hicksville: image('5ece26bd-39ec-4483-b997-2960209409c7',1920),
   story: image('71d1c239-d06e-4c2b-8f7a-7b99f62c65e2'),
   rewards: image('9ae04eee-3dbf-4e33-896c-999aa9422ccd')
@@ -62,7 +62,7 @@ const sauceList = [
 
 const navItems = `<a href="${page('menu')}">Menu</a><a href="${page('catering')}">Catering</a><a href="${page('rewards')}">Rewards</a><button class="plain" type="button" data-open="sauces">Peri-Peri Sauces</button><a href="${page('story')}">Our Story</a>`;
 document.querySelector('#header').innerHTML = `
-  <a class="logo-link" href="?" aria-label="Peri-Peri Guys home">${picture(photos.logo,'',true)}<span>Peri-Peri Guys</span></a>
+  <a class="logo-link" href="?" aria-label="Peri-Peri Guys home"><span class="logo-mark">${picture(photos.logo,'',true)}</span><span class="logo-name">Peri-Peri Guys</span></a>
   <nav class="nav" aria-label="Main navigation">${navItems}</nav>
   <div class="account"><button class="plain" type="button" data-open="locations">Find a location</button><a href="${client}/login">Sign in</a><a href="${page('rewards')}">Join</a></div>
   ${openButton('Order now','order','order-float')}
@@ -114,7 +114,7 @@ function home() {
     [photos.skewers,'Find your flavor','Pick a sauce for your flame-grilled chicken.',openButton('Explore sauces','sauces','dark')],
     [photos.catering,'Feed the whole crew','Whole chickens and sharing platters for your next event.',link('Order catering',page('catering'))]
   ])}
-  ${stripe}<section class="wrap section"><h2 data-reveal>The crowd pleasers</h2><div class="feature-grid">${dishes.slice(0,5).map(dishCard).join('')}</div></section>
+  ${stripe}<section class="wrap section featured" aria-labelledby="featured-title"><h2 id="featured-title" data-reveal>The crowd pleasers</h2><div class="feature-grid">${dishes.slice(0,5).map(dishCard).join('')}</div></section>
   <section class="wrap section categories"><h2 data-reveal>Hungry?</h2><div class="category-grid">
   ${categories.map(([name,src]) => `<a class="category-card" href="${page('menu',name)}"><div class="category-media">${src ? picture(src) : '<div class="category-fallback" aria-hidden="true"></div>'}<span class="category-cta" aria-hidden="true">View menu</span></div><span>${name}</span></a>`).join('')}
   </div><p class="section-action">${link('View full menu',page('menu'),'dark')}</p></section>
