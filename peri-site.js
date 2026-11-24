@@ -88,10 +88,13 @@ function campaign(title, cards, dark = false) {
     </div></section>`;
 }
 
+// Each track contains two identical runs so it can loop without a seam.
+const orderRun = '<span>ORDER NOW&nbsp; ORDER NOW&nbsp; ORDER NOW&nbsp; ORDER NOW&nbsp;</span>';
+const orderRows = Array.from({length:12}, () => '<span class="order-track">' + orderRun + orderRun + '</span>').join('');
 function dishCard(dish) {
   const details = `<button type="button" class="plain details" data-dish="${dishes.indexOf(dish)}" aria-label="Details for ${dish.name}">Details</button>`;
   return `<article class="dish${dish.photo ? '' : ' dish-no-photo'}" data-category="${dish.category.replaceAll('&','&amp;')}">
-    ${dish.photo ? `<div class="dish-media">${picture(dish.photo,dish.name)}${details}</div>` : ''}
+    ${dish.photo ? `<button type="button" class="dish-media food-tile" data-dish="${dishes.indexOf(dish)}" aria-label="Details for ${dish.name}">${picture(dish.photo,'')}<span class="food-motion" aria-hidden="true"><span class="order-wall">${orderRows}</span><span class="detail-disc">Details</span></span></button>` : ''}
     <div class="card-body"><h3>${dish.name}</h3><p class="dish-description">${dish.description}</p><p class="dish-price">$${dish.price}</p>
     ${dish.photo ? '' : details}
     ${openButton('Order','order','dark')}</div></article>`;
@@ -282,6 +285,11 @@ document.addEventListener('click', event => {
   const button = event.target.closest('button');
   if (!button) return;
   const {open, dish, sauce, method} = button.dataset;
+  if (button.matches('.food-tile') && event.pointerType === 'touch' && !button.classList.contains('touch-active')) {
+    document.querySelector('.food-tile.touch-active')?.classList.remove('touch-active');
+    button.classList.add('touch-active');
+    return;
+  }
   if (open === 'dismiss') dialog.close();
   else if (open === 'welcome-geo') {
     show(dialogs.locations(),'locations');
@@ -338,3 +346,8 @@ if (current === 'menu') {
   search.addEventListener('input',updateMenu);
   updateMenu();
 }
+
+document.addEventListener('pointerdown', event => {
+  const active = document.querySelector('.food-tile.touch-active');
+  if (active && !active.contains(event.target)) active.classList.remove('touch-active');
+});

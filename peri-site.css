@@ -250,3 +250,16 @@ body[data-page="home"] .wrap:not(.campaign){width:min(90%,1280px)}
  .feature-grid .dish{min-height:184px;grid-template-columns:98px minmax(0,1fr)}
  .category-card>span{min-height:52px}
 }
+
+.food-tile{display:block;width:100%;min-width:0;padding:0;border:0;background:var(--cream);cursor:pointer;isolation:isolate}
+.food-motion{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;background:#0d0d0d;opacity:0;transition:opacity .18s ease;pointer-events:none}
+.order-wall{position:absolute;inset:-15% -18%;display:flex;flex-direction:column;justify-content:center;transform:rotate(-3deg);color:#aaa8af;font:700 clamp(24px,2.35vw,46px)/1.06 system-ui,sans-serif;letter-spacing:-.06em;text-align:left}
+.order-track{display:flex;flex:none;width:max-content;white-space:nowrap;animation:order-drift 12s linear infinite;animation-play-state:paused}
+.order-track:nth-child(even){animation-direction:reverse}
+.detail-disc{position:relative;display:grid;place-items:center;aspect-ratio:1;width:40%;max-width:100px;border-radius:50%;background:var(--orange);color:var(--ink);font:800 clamp(12px,1.3vw,19px)/1 system-ui,sans-serif;text-transform:uppercase;transform:scale(.82);transition:transform .22s ease}
+.food-tile:is(:focus-visible,.touch-active) .food-motion{opacity:1}
+.food-tile:is(:focus-visible,.touch-active) .detail-disc{transform:none}
+.food-tile:is(:focus-visible,.touch-active) .order-track{animation-play-state:running}
+@media(hover:hover){.dish:hover .food-motion{opacity:1}.dish:hover .detail-disc{transform:none}.dish:hover .order-track{animation-play-state:running}}
+@keyframes order-drift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.order-track{animation:none}.food-motion,.detail-disc{transition:none}}
