@@ -147,7 +147,7 @@ dialog[data-mode="navigation"]{position:fixed;inset:0 0 0 auto;margin:0;height:1
 .feature-copy p:not(.section-tag){margin:0 auto 25px}
 .feature-actions{display:grid;justify-items:center;gap:22px}
 .feature-actions>a:last-child{font-weight:800;text-transform:uppercase;text-underline-offset:8px}
-.venue-cover{margin:0;height:clamp(350px,48vw,730px);overflow:hidden;background:#462719}
+.venue-cover{margin:0;height:calc(100svh - 80px);overflow:hidden;background:#462719}
 .venue-cover img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
 .story-feature{background:var(--cream)}
 .location-feature-grid{display:grid;grid-template-columns:minmax(180px,300px) 1fr;align-items:center;gap:28px}
@@ -177,7 +177,7 @@ dialog[data-mode="navigation"]{position:fixed;inset:0 0 0 auto;margin:0;height:1
   .campaign-card .card-body{min-height:214px}
   .dish-media .details{inset:auto 3px 5px;padding:4px;font-size:.67rem;min-height:28px}
   .dish .dish-description{display:none}
-  .feature-copy{padding:76px 0 85px}.venue-cover{height:58svh}
+  .feature-copy{padding:76px 0 85px}.venue-cover{height:calc(100svh - 56px)}
   .location-feature-grid{grid-template-columns:1fr;gap:16px}
 }
 .footer-extras{display:grid;grid-template-columns:1fr 1fr auto;gap:32px;align-items:center;padding:24px 0 36px;border-top:1px solid #555}
@@ -221,3 +221,7 @@ dialog[data-mode="welcome"] p{color:#555;font-size:.95rem;margin-bottom:22px}
 .occasion-grid article,.reward-steps article{overflow:hidden;border-radius:10px;background:var(--cream);text-align:center}.occasion-grid img{display:block;width:100%;aspect-ratio:1.35;object-fit:cover}.reward-steps article{padding:36px 22px}.reward-steps article:nth-child(2){background:var(--ink);color:white}.reward-steps article:last-child{background:var(--orange)}
 .finder-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;margin-bottom:32px}.finder-heading h2{margin:0}
 @media(max-width:600px){.occasion-grid,.reward-steps{grid-template-columns:1fr;gap:14px}}
+
+/* Full-width scenes between the rewards panel and editorial feature. */
+.catering-feature,.story-feature{display:flex;flex-direction:column;justify-content:center;position:relative}.catering-feature{min-height:max(840px,110svh)}.story-feature{min-height:calc(100svh - 80px)}.catering-feature>.stripe,.story-feature>.stripe{position:absolute;inset:0 0 auto}.feature-copy{padding-block:clamp(80px,12vw,170px)}.featured{padding-bottom:clamp(64px,6.5vw,94px)}.location-feature{padding-block:clamp(72px,8vw,120px)}
+@media(max-width:600px){.campaign-band:not(.hot) .campaign-card .card-body{min-height:250px}.story-feature{min-height:calc(100svh - 56px)}.location-feature-grid img{max-height:350px}.catering-feature .feature-copy{padding-inline:8px}}

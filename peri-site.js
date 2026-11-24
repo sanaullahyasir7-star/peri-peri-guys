@@ -124,6 +124,7 @@ function home() {
     [photos.wings,'Peri-Wings','Pick one flavor or try a mix of sauces.',link('Explore wings',page('menu','Wings'))]
   ],true)}
   <section class="wrap section rewards-feature"><div class="split"><div class="split-copy"><strong class="section-tag">Peri-Peri Guys Rewards</strong><h2 data-reveal>Earn points for free food</h2><p>Join Peri-Peri Guys Rewards and earn points when you order online.</p>${link('Explore rewards',page('rewards'))}${appStores}</div>${picture(photos.rewards)}</div></section>
+  <figure class="venue-cover feast-cover"><div data-parallax="48">${picture(photos.hero,"Flame-grilled peri-peri chicken")}</div></figure>
   <section class="catering-feature">${stripe}<div class="feature-copy">
     <p class="section-tag">Feed the crowd</p><h2 data-reveal>Catering for<br>your next event</h2>
     <p>Order whole flame-grilled chickens, sharing platters, and sides for an office lunch, a birthday, or a family get-together. Choose your peri-peri sauce for the group.</p>
