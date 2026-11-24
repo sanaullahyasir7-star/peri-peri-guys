@@ -225,3 +225,28 @@ dialog[data-mode="welcome"] p{color:#555;font-size:.95rem;margin-bottom:22px}
 /* Full-width scenes between the rewards panel and editorial feature. */
 .catering-feature,.story-feature{display:flex;flex-direction:column;justify-content:center;position:relative}.catering-feature{min-height:max(840px,110svh)}.story-feature{min-height:calc(100svh - 80px)}.catering-feature>.stripe,.story-feature>.stripe{position:absolute;inset:0 0 auto}.feature-copy{padding-block:clamp(80px,12vw,170px)}.featured{padding-bottom:clamp(64px,6.5vw,94px)}.location-feature{padding-block:clamp(72px,8vw,120px)}
 @media(max-width:600px){.campaign-band:not(.hot) .campaign-card .card-body{min-height:250px}.story-feature{min-height:calc(100svh - 56px)}.location-feature-grid img{max-height:350px}.catering-feature .feature-copy{padding-inline:8px}}
+
+/* Campaign artwork fills the viewport; product collections share an inset column. */
+body[data-page="home"] .wrap:not(.campaign){width:min(90%,1280px)}
+.campaign-band:not(.hot) .wrap.campaign{width:100%;max-width:none}
+.campaign-grid{gap:24px;padding-bottom:64px}
+.campaign-card:first-child,.campaign-card:last-child{top:64px}
+.campaign-card{min-height:727px}
+.campaign-card .card-body{min-height:0}
+.hot .campaign-card{min-height:683px}
+.feature-grid,.category-grid{gap:30px}
+.feature-grid .dish{min-height:585px}
+.category-card img,.category-fallback{aspect-ratio:1}
+.category-card>span{min-height:74px}
+@media(max-width:600px){
+ body[data-page="home"] .wrap:not(.campaign){width:calc(100% - 24px)}
+ .campaign-band .campaign-grid{gap:0;padding-bottom:0;justify-items:center}
+ .campaign-grid .campaign-card{width:90%;min-height:624px}
+ .hot .wrap.campaign{width:calc(100% - 24px)}
+ .hot .campaign-card{min-height:566px}
+ .campaign-card:first-child,.campaign-card:last-child{top:0}
+ .campaign-card:nth-child(2){--tilt:-3deg}.campaign-card:last-child{--tilt:3deg}
+ .feature-grid,.category-grid{gap:10px}
+ .feature-grid .dish{min-height:184px;grid-template-columns:98px minmax(0,1fr)}
+ .category-card>span{min-height:52px}
+}

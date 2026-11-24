@@ -209,7 +209,7 @@ if (current === 'home' && !matchMedia('(prefers-reduced-motion: reduce)').matche
       const leaving = clamp((bottom - height * .13) / (height * .53));
       const progress = desktop.matches ? Math.min(entering,leaving) : 1;
       const stacked = 1 - progress * progress * (3 - 2 * progress);
-      const stackDistance = group.children[1].offsetLeft - group.children[0].offsetLeft;
+      const stackDistance = group.children[0].offsetWidth;
       targets.push([group,'--fan-offset',stackDistance * stacked]);
     }
     for (const layer of layers) {
