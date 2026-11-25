@@ -109,7 +109,7 @@
 
     // Rising embers.
     const canvas = hero.querySelector('.hx-embers');
-    if (canvas && !reduce) {
+    if (canvas && !reduce && !window.PPG_NO_FIRE) {
       const ctx = canvas.getContext('2d');
       let w, h, dpr, parts = [], visible = true, raf;
       const size = () => {
@@ -247,6 +247,7 @@
     frame();
     // 4) Tap sparks on buttons (the touch version of the flame cursor).
     document.addEventListener('pointerdown', e => {
+      if (window.PPG_NO_FIRE) return;
       const btn = e.target.closest('.pill, .mbar > *, .choice, .heat-float, .to-top'); if (!btn) return;
       for (let i = 0; i < 10; i++) {
         const s = document.createElement('i'); s.className = 'spark';

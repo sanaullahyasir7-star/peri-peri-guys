@@ -6,7 +6,7 @@
 :root{
   --brand:#f26925;--brand-2:#e0561a;--brand-3:#b8460f;--ink:#000;--ink-2:#1a1a1a;--cream:#f4efea;--grey:#6b6b6b;--yellow:#ffc72c;
   --red:var(--brand);--orange:var(--brand);
-  --sans:"Barlow",system-ui,sans-serif;--cond:"Barlow Condensed","Arial Narrow",sans-serif;--hand:"Caveat Brush","Comic Sans MS",cursive;--display:var(--cond);
+  --sans:"Barlow",system-ui,sans-serif;--cond:"Barlow Condensed","Arial Narrow",sans-serif;--hand:"Bebas Neue",Impact,"Arial Narrow",sans-serif;--display:var(--cond);
   --chili:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 32%22%3E%3Cpath d=%22M15.5 1.5c-.8 1.6-.6 3 .4 4.2C21 7 21.6 12 19.6 17.5 17.3 24 11.2 29.4 4.5 30.4c-1.7.3-2.6-1.4-1.3-2.5 4.6-4 7.2-9.3 7.6-15.2.2-3 1.6-5.4 4.2-6.6-.9-1.3-.9-3.2.5-4.6z%22 fill=%22%23000%22/%3E%3C/svg%3E");--heart:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 22%22%3E%3Cpath d=%22M12 21.5S1 14.6 1 7.4A5.9 5.9 0 0 1 12 4.2a5.9 5.9 0 0 1 11 3.2c0 7.2-11 14.1-11 14.1z%22 fill=%22%23000%22/%3E%3C/svg%3E");--flame:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M52 6c4 16 30 26 30 52a32 32 0 0 1-64 0c0-15 8-25 14-32 0 11 4 17 9 21-1-18 3-31 11-41z%22 fill=%22%23000%22/%3E%3C/svg%3E");--person:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 28%22%3E%3Ccircle cx=%2212%22 cy=%226.5%22 r=%225.5%22 fill=%22%23000%22/%3E%3Cpath d=%22M1 27c0-7 4.9-12 11-12s11 5 11 12z%22 fill=%22%23000%22/%3E%3C/svg%3E");--band:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 960 64%22 preserveAspectRatio=%22none%22%3E%3Cg fill=%22%23000%22%3E%3Cg fill=%22none%22 stroke=%22%23000%22 stroke-width=%229%22%3E%3Ccircle cx=%2286%22 cy=%22-8%22 r=%2270%22/%3E%3Ccircle cx=%2286%22 cy=%22-8%22 r=%2250%22/%3E%3Ccircle cx=%2286%22 cy=%22-8%22 r=%2230%22/%3E%3C/g%3E%3Ccircle cx=%2286%22 cy=%22-8%22 r=%2212%22/%3E%3Cpath d=%22M172 0h70l22 34 22-34h62l-30 52-120 6z%22/%3E%3Cpath d=%22M352 0h9l34 46h-9zM370 0h9l34 46h-9zM388 0h9l34 46h-9zM406 0h9l34 46h-9z%22/%3E%3Cpath d=%22M440 0h82v36a41 41 0 0 1-82-2z%22/%3E%3Cg fill=%22none%22 stroke=%22%23000%22 stroke-width=%227%22%3E%3Cpath d=%22M532 2a64 64 0 0 0 64 30%22/%3E%3Cpath d=%22M532 16a50 50 0 0 0 50 22%22/%3E%3Cpath d=%22M532 30a36 36 0 0 0 36 14%22/%3E%3C/g%3E%3Cpath d=%22M612 0h74l15 22 15-22h61l-12 30-138 8z%22/%3E%3Cpath d=%22M800 0h9l26 34h-9zM818 0h9l26 34h-9zM836 0h9l26 34h-9zM854 0h9l26 34h-9z%22/%3E%3Cpath d=%22M900 0h60v14a60 60 0 0 1-60-14z%22/%3E%3C/g%3E%3C/svg%3E");
   --fire:var(--brand);
 }
@@ -390,3 +390,29 @@ dialog[data-mode="navigation"] .close{color:#000;border-color:#ddd}
   .campaign .campaign-title{font-size:clamp(38px,11vw,50px)!important}
   .featured h2{font-size:clamp(30px,8.6vw,38px)!important}
 }
+
+/* ===== v4: Peri-Peri Guys fonts, no fire effects, bigger card motion ===== */
+.hand,h1,h2,.mega-word,.intro-word,.card-label,.footer-extras h3,.logo-link .logo-name,.location-card h3,dialog[data-mode="navigation"] h2{font-family:"Bebas Neue",Impact,"Arial Narrow",sans-serif!important;-webkit-text-stroke:0!important;letter-spacing:.01em!important;text-transform:uppercase!important;line-height:.95!important}
+.hx-title{font-size:clamp(68px,8vw,124px)!important}
+.campaign .campaign-title{font-size:clamp(56px,6.6vw,100px)!important}
+.featured h2{font-size:clamp(44px,4.4vw,70px)!important}
+.categories h2{font-size:clamp(70px,7.6vw,120px)!important}
+.split-copy h2{font-size:clamp(50px,4.6vw,74px)!important}
+.card-label{font-size:clamp(32px,3vw,46px)!important;padding:.14em .5em .1em .65em!important}
+.footer-extras h3{font-size:2.3rem!important}
+.logo-link .logo-name{font-size:2.2rem!important;color:#000!important}
+.mega-word{font-size:clamp(70px,15vw,250px)!important}
+/* no flame cursor / embers in classic */
+html,body{cursor:auto!important}
+a,button,summary,label,select,[role=button],.dish,.dish *,.category-card,.category-card *,.heat-range{cursor:pointer!important}
+.hx-embers,.spark,.ember-trail{display:none!important}
+/* card motion: big, slow, unmistakable deal-in */
+.deal.dealt{animation:deal-big 1.15s cubic-bezier(.18,1.2,.32,1) backwards!important;animation-delay:calc(var(--k) * 150ms)!important}
+@keyframes deal-big{0%{opacity:0;translate:0 220px;rotate:calc(var(--r) * 2.4);scale:.72}55%{opacity:1}100%{opacity:1;translate:0 0;rotate:0deg;scale:1}}
+/* hover: lift + tilt + deeper shadow */
+@media(hover:hover){
+  .dish,.category-card{transition:translate .45s var(--ease),rotate .45s var(--ease),box-shadow .45s}
+  .dish:hover,.category-card:hover{translate:0 -12px;rotate:-1deg;box-shadow:0 26px 40px -22px #0009!important}
+  .category-card:nth-child(even):hover,.dish:nth-child(even):hover{rotate:1deg}
+}
+@media(hover:none){.dish.pressed,.category-card.pressed{translate:0 -6px;transition:translate .3s var(--ease)}}
