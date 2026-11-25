@@ -200,14 +200,15 @@ const screens = {
     const chapters = [
       {n:'01', when:'15th century', title:'The sauce has a 500-year history', img:photos.story, alt:'African bird’s eye chilies and peri-peri sauce',
        text:'The African Bird’s Eye chili traveled from Mozambique to Portuguese kitchens in the 15th century, spreading through South Africa and Europe. That journey lives in every bottle of Peri-Peri Guys sauce.'},
-      {n:'02', when:'2020', title:'How it started', img:photos.sandwich, alt:'Peri-Peri Guys sandwiches',
+      {n:'02', when:'2020', title:'How it started', art:'route', alt:'Illustration: Glasgow to New York, and the soccer game where the founders met',
        text:'Hafeez Raja moved from Glasgow to New York and couldn’t find peri-peri up to his standards, so he started shipping ingredients from the UK. A pick-up soccer game introduced him to Greg Raposo — a New York native of Portuguese descent — and their partnership launched in 2020.'},
-      {n:'03', when:'Day one', title:'The 24-hour commitment', img:photos.whole, alt:'Flame-grilled peri-peri chicken',
+      {n:'03', when:'Day one', title:'The 24-hour commitment', art:'clock', alt:'Illustration: a 24-hour marinade clock',
        text:'Every bird is organic, steroid-free, and Zabiha Halal — marinated over 24 hours before it ever sees the flame. That standard was set on day one and hasn’t moved since.'},
-      {n:'04', when:'2022', title:'Long Island took notice', img:photos.hicksville, alt:'Peri-Peri Guys in Hicksville',
+      {n:'04', when:'2022', title:'Long Island took notice', art:'awards', alt:'Illustration: Newsday Top 100 medal, Empire Award plaque and Long Island map',
        text:'The Hicksville location earned a spot on Newsday’s Top 100 Restaurants list, and in 2022, State Senator Kevin Thomas presented the founder with the New York State Empire Award. From Hicksville to Selden, the peri-peri fanbase on Long Island keeps growing.'}
     ];
-    return `<section class="st-hero" style="--cover:url('${photos.hero}')">
+    const art = (c, where) => c.art && window.storyArt ? storyArt[c.art](`${c.art}-${where}`) : picture(c.img, where === 'i' ? c.alt : '');
+    return `<section class="st-hero">${window.storyArt ? storyArt.journey('jr') : ''}
       <div class="st-hero-inner">
         <p class="kicker">Our story</p>
         <h1>A sauce born from <em>centuries</em> of tradition</h1>
@@ -222,9 +223,9 @@ const screens = {
       <a class="hx-cue" href="#st-chapters" aria-label="Scroll to the story"><span></span></a>
     </section>
     <section class="st-chapters" id="st-chapters" aria-label="The Peri-Peri Guys story">
-      <div class="st-media" aria-hidden="true">${chapters.map((c,i)=>`<figure class="st-frame${i?'':' is-active'}" data-i="${i}">${picture(c.img,'')}<figcaption><span>${c.n}</span>${c.when}</figcaption></figure>`).join('')}</div>
+      <div class="st-media" aria-hidden="true">${chapters.map((c,i)=>`<figure class="st-frame${i?'':' is-active'}${c.art?' is-art':''}" data-i="${i}">${art(c,'f')}<figcaption><span>${c.n}</span>${c.when}</figcaption></figure>`).join('')}</div>
       <div class="st-text">${chapters.map((c,i)=>`<article class="st-ch" data-i="${i}">
-        <figure class="st-inline">${picture(c.img,c.alt)}</figure>
+        <figure class="st-inline${c.art?' is-art':''}"${c.art?` role="img" aria-label="${c.alt}"`:''}>${art(c,'i')}</figure>
         <p class="st-when"><span class="st-num">${c.n}</span>${c.when}</p>
         <h2>${c.title}</h2><p>${c.text}</p></article>`).join('')}</div>
     </section>

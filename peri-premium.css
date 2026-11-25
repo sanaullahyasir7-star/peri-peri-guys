@@ -764,3 +764,37 @@ body[data-page="story"] main{overflow:clip}
 }
 @media(prefers-reduced-motion:reduce){.st-frame,.st-ch{transition:none}}
 @media(min-width:901px){.st-hero{padding-top:clamp(46px,5vw,80px);padding-bottom:70px;gap:clamp(30px,4vw,54px)}.st-hero h1{font-size:clamp(56px,6.4vw,104px);margin-bottom:22px}.st-hero .kicker{margin-bottom:14px}}
+
+/* ===== Story artwork ===== */
+.st-hero{background:#0d0907!important}
+.st-hero>.st-journey{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
+.st-hero::before{z-index:-1!important;background:linear-gradient(95deg,#0d0907f5 18%,#0d0907b3 46%,#0d090700 75%)!important}
+.st-art{display:block;width:100%;height:100%}
+.st-frame.is-art::after{display:none}
+.st-inline.is-art{aspect-ratio:4/5}
+.st-art .ping,.st-art .chip,.st-art .medal,.st-art .plaque,.st-art .ball,.st-art .flame{transform-box:fill-box;transform-origin:center}
+.st-art .fill-ring{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.6s cubic-bezier(.5,0,.2,1) .2s}
+.st-art .chip{opacity:0;translate:0 14px;transition:opacity .6s var(--ease),translate .6s var(--ease)}
+.st-art .chip.c2{transition-delay:.15s}.st-art .chip.c3{transition-delay:.3s}
+.st-art .pin{opacity:.25;transition:opacity .8s}
+/* active = the chapter in view (sticky panel) or the current chapter (phones); the hero always plays */
+:is(.st-frame.is-active,.st-ch.is-current,.st-hero) .st-art .fill-ring{stroke-dashoffset:0}
+:is(.st-frame.is-active,.st-ch.is-current,.st-hero) .st-art .chip{opacity:1;translate:0 0}
+:is(.st-frame.is-active,.st-ch.is-current,.st-hero) .st-art .pin{opacity:1}
+.st-hero .st-art .p2{transition-delay:.6s}.st-hero .st-art .p3{transition-delay:1s}.st-hero .st-art .p4{transition-delay:1.4s}
+@media(prefers-reduced-motion:no-preference){
+  :is(.st-frame.is-active,.st-ch.is-current,.st-hero) .st-art .draw{animation:march 1.6s linear infinite}
+  :is(.st-frame.is-active,.st-ch.is-current,.st-hero) .st-art .ping{animation:ping 2s ease-out infinite}
+  :is(.st-frame.is-active,.st-ch.is-current) .st-art .medal{animation:bob 5s ease-in-out infinite}
+  :is(.st-frame.is-active,.st-ch.is-current) .st-art .plaque{animation:bob 5s ease-in-out -2.5s infinite}
+  :is(.st-frame.is-active,.st-ch.is-current) .st-art .ball{animation:bounce 1.8s cubic-bezier(.5,0,.5,1) infinite}
+  :is(.st-frame.is-active,.st-ch.is-current) .st-art .flame{animation:flick 1.4s ease-in-out infinite}
+}
+@keyframes march{to{stroke-dashoffset:-.06}}
+@keyframes ping{0%{opacity:.8;scale:1}100%{opacity:0;scale:3.2}}
+@keyframes bob{50%{translate:0 -10px}}
+@keyframes bounce{50%{translate:0 -26px}}
+@keyframes flick{50%{scale:1.08 .94}}
+.st-frame:not(.is-active) .st-art *{animation-play-state:paused}
+@media(max-width:900px){.st-hero::before{background:linear-gradient(180deg,#0d0907e6 30%,#0d0907b3 70%,#0d0907e6)!important}}
+.st-frame.is-art figcaption{display:none}
