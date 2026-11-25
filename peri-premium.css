@@ -241,3 +241,31 @@ dialog::backdrop{background:#120d0bb3;backdrop-filter:blur(6px)}
 body:not([data-page="home"]) .pill.order-float{position:static}
 @media(max-width:900px){.pill.order-float{position:static;background:var(--fire);color:var(--ink)}}
 .category-fallback{opacity:1;background:radial-gradient(circle at 30% 25%,#ff8a3d66,transparent 55%),radial-gradient(circle at 75% 80%,#d7261e55,transparent 50%),var(--ink-2)}
+
+/* logo: the image file is 160px tall, so cap it and hide the text wordmark while the image shows */
+.logo-link img{display:block;height:46px;width:auto;max-width:180px;object-fit:contain;transition:height .35s var(--ease)}
+body.scrolled .logo-link img{height:38px}
+.logo-link:has(img) span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+body[data-page="home"]:not(.scrolled) .logo-link img{filter:drop-shadow(0 2px 10px #0008)}
+@media(max-width:900px){.logo-link img{height:36px}body.scrolled .logo-link img{height:32px}}
+.footer-extras img{max-height:72px;width:auto}
+
+/* hover reveal on every dish + category card: photo wipes away to a scrolling type panel with a spinning flame badge */
+.hov{position:absolute;inset:0;z-index:1;overflow:hidden;background:radial-gradient(circle at 50% 50%,#3a1a10,var(--ink) 70%);clip-path:inset(100% 0 0 0);transition:clip-path .6s var(--ease);pointer-events:none}
+.hov-rows{position:absolute;inset:-25% -40%;display:grid;align-content:center;gap:.04em;rotate:-9deg}
+.hov-row{display:flex;gap:.3em;width:max-content;font:400 clamp(38px,3.6vw,58px)/.92 var(--display);letter-spacing:.02em;color:var(--cream);white-space:nowrap;animation:hov-slide 7s linear infinite;animation-play-state:paused}
+.hov-row:nth-child(even){animation-direction:reverse;color:transparent;-webkit-text-stroke:1.4px var(--orange)}
+.hov-row:nth-child(3n){color:var(--orange);-webkit-text-stroke:0}
+@keyframes hov-slide{to{transform:translateX(-50%)}}
+@media(hover:hover){
+  .dish:is(:hover,:focus-within) .hov,.category-card:is(:hover,:focus-visible) .hov{clip-path:inset(0)}
+  .dish:is(:hover,:focus-within) .hov-row,.category-card:is(:hover,:focus-visible) .hov-row{animation-play-state:running}
+  .dish-media .details,.category-media .category-cta{inset:50% auto auto 50%!important;width:124px;height:124px;min-height:0!important;padding:0!important;border-radius:50%!important;background:var(--fire)!important;color:var(--ink)!important;font:400 1.55rem/1 var(--display)!important;letter-spacing:.04em;text-decoration:none!important;z-index:2;opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(-30deg)!important;transition:opacity .35s,transform .6s var(--ease)!important;box-shadow:0 20px 40px -10px #ff5a1f99}
+  .dish-media .details::before,.category-media .category-cta::before{content:"";position:absolute;inset:-10px;border-radius:50%;border:1.5px dashed #ffb547aa;animation:spin 9s linear infinite}
+  .dish-media .details::after,.category-media .category-cta::after{content:"🔥";position:absolute;top:14px;left:50%;translate:-50% 0;font-size:1.1rem}
+  .dish:is(:hover,:focus-within) .details,.category-card:is(:hover,:focus-visible) .category-cta{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0deg)!important;transition-delay:.12s!important}
+  .dish:hover .dish-media img,.category-card:hover .category-media img{transform:scale(1.12)}
+  .category-media .category-cta{display:grid!important;place-items:center;padding-top:10px!important}
+  .dish-media .details{padding-top:12px!important}
+}
+@media(prefers-reduced-motion:reduce){.hov-row{animation:none}.hov{transition:none}}

@@ -16,6 +16,17 @@
     else img.addEventListener('error', fail, {once:true});
   }
 
+  // Hover panels with scrolling type on every dish and category card.
+  for (const media of document.querySelectorAll('.dish-media, .category-media')) {
+    const card = media.closest('.dish, .category-card');
+    const word = card.classList.contains('dish') ? 'Order now' : (card.querySelector(':scope > span')?.textContent || 'View menu');
+    const row = `<div class="hov-row">${`<span>${word}</span><span>✦</span>`.repeat(8)}</div>`;
+    const hov = document.createElement('div'); hov.className = 'hov'; hov.setAttribute('aria-hidden', 'true');
+    hov.innerHTML = `<div class="hov-rows">${row.repeat(7)}</div>`;
+    media.insertBefore(hov, media.querySelector('.details, .category-cta'));
+  }
+  for (const cta of document.querySelectorAll('.category-cta')) cta.textContent = 'View menu';
+
   // Header state + scroll progress.
   const progress = document.querySelector('.progress');
   const onScroll = () => {
