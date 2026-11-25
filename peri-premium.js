@@ -62,6 +62,79 @@
     }
   }
 
+  // ================= Premium detailing =================
+  // Live open/closed status from the real store hours (New York time).
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const toMin = t => { const m = t.trim().match(/(\d+)(?::(\d+))?\s*(am|pm)/i); if (!m) return null; let h = +m[1] % 12; if (/pm/i.test(m[3])) h += 12; return h * 60 + (+m[2] || 0); };
+  const fmt = min => { let h = Math.floor(min / 60), m = min % 60; const ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12; return `${h}${m ? ':' + String(m).padStart(2, '0') : ''} ${ap}`; };
+  const schedule = hours => {
+    const week = Array(7).fill(null);
+    for (const part of hours.split('·')) {
+      const m = part.trim().match(/^(\w{3})(?:\s*[–-]\s*(\w{3}))?\s+(.+?)\s*[–-]\s*(.+)$/);
+      if (!m) continue;
+      const a = DAYS.indexOf(m[1]), b = m[2] ? DAYS.indexOf(m[2]) : a, open = toMin(m[3]), close = toMin(m[4]);
+      if (a < 0 || b < 0 || open == null || close == null) continue;
+      for (let d = a; ; d = (d + 1) % 7) { week[d] = [open, close]; if (d === b) break; }
+    }
+    return week;
+  };
+  const nyNow = () => { const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', {timeZone: 'America/New_York', weekday: 'short', hour: 'numeric', minute: 'numeric', hourCycle: 'h23'}).formatToParts(new Date()).map(x => [x.type, x.value])); return {day: DAYS.indexOf(p.weekday), min: (+p.hour % 24) * 60 + +p.minute}; };
+  const status = hours => {
+    const w = schedule(hours), {day, min} = nyNow(), today = w[day];
+    if (today && min >= today[0] && min < today[1]) return {open: true, text: `Open now · until ${fmt(today[1])}`};
+    if (today && min < today[0]) return {open: false, text: `Closed · opens ${fmt(today[0])}`};
+    for (let i = 1; i <= 7; i++) { const d = (day + i) % 7; if (w[d]) return {open: false, text: `Closed · opens ${i === 1 ? 'tomorrow' : DAYS[d]} ${fmt(w[d][0])}`}; }
+    return null;
+  };
+  const chip = st => `<span class="open-chip${st.open ? ' is-open' : ''}"><i aria-hidden="true"></i>${st.text}</span>`;
+  const decorateStores = root => {
+    if (typeof stores === 'undefined') return;
+    for (const card of root.querySelectorAll('.location-card')) {
+      if (card.querySelector('.open-chip')) continue;
+      const name = card.querySelector('h3')?.textContent.trim(), store = stores.find(s => s.name === name), st = store && status(store.hours);
+      if (st) card.querySelector('h3').insertAdjacentHTML('afterend', chip(st));
+    }
+  };
+  decorateStores(document);
+  const dlg = document.querySelector('#dialog-content');
+  if (dlg) new MutationObserver(() => decorateStores(dlg)).observe(dlg, {childList: true, subtree: true});
+  setTimeout(() => { // the footer wordmark block is built further down this script
+    const meta = document.querySelector('.mega-meta');
+    if (!meta || typeof stores === 'undefined' || document.querySelector('.mega-live')) return;
+    const live = document.createElement('div'); live.className = 'mega-live';
+    live.innerHTML = stores.map(s => { const st = status(s.hours); return st ? `<span><b>${s.name}</b>${chip(st)}</span>` : ''; }).join('');
+    meta.before(live);
+  });
+
+  // Photos: shimmer while loading, soft fade-in when ready.
+  for (const img of document.querySelectorAll('.dish-media img, .category-media img, .campaign-card img, .split img, .venue-cover img, .location-feature-grid img')) {
+    const box = img.parentElement; if (!box) continue;
+    if (img.complete && img.naturalWidth) { img.classList.add('loaded'); continue; }
+    box.classList.add('shimmer');
+    img.addEventListener('load', () => { img.classList.add('loaded'); box.classList.remove('shimmer'); }, {once: true});
+    img.addEventListener('error', () => box.classList.remove('shimmer'), {once: true});
+  }
+
+  // Editorial chapter numbers on home section titles.
+  if (body.dataset.page === 'home') {
+    let n = 0;
+    for (const h of document.querySelectorAll('main .heat-copy .kicker, main .campaign-title, main .featured > h2, main .categories > h2, main .split-copy .section-tag, main .feature-copy .section-tag, main .location-feature > h2')) {
+      n++; h.setAttribute('data-chapter', String(n).padStart(2, '0'));
+    }
+  }
+
+  // Smart header: slides away while scrolling down, returns on any scroll up.
+  {
+    let lastY = scrollY, acc = 0;
+    addEventListener('scroll', () => {
+      const y = scrollY, d = y - lastY; lastY = y;
+      if (document.querySelector('dialog[open]')) return;
+      acc = Math.sign(d) === Math.sign(acc) ? acc + d : d;
+      if (y < 140 || acc < -12) body.classList.remove('header-away');
+      else if (acc > 40) body.classList.add('header-away');
+    }, {passive: true});
+  }
+
   // Header state + scroll progress.
   const progress = document.querySelector('.progress');
   const onScroll = () => {
