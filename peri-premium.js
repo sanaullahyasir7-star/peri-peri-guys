@@ -261,6 +261,35 @@
 
   if (!fine || reduce) return;
 
+  // Ember trail behind the flame cursor (desktop).
+  {
+    const cv = document.createElement('canvas'); cv.className = 'ember-trail'; cv.setAttribute('aria-hidden', 'true');
+    body.append(cv);
+    const ctx = cv.getContext('2d'); let w, h, dpr; const parts = [];
+    const size = () => { dpr = Math.min(devicePixelRatio || 1, 2); w = cv.width = innerWidth * dpr; h = cv.height = innerHeight * dpr; };
+    size(); addEventListener('resize', size);
+    let px = 0, py = 0, running = false;
+    const tick = () => {
+      ctx.clearRect(0, 0, w, h); ctx.globalCompositeOperation = 'lighter';
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i]; p.x += p.vx; p.y += p.vy; p.vy -= .02 * dpr; p.life -= .028;
+        if (p.life <= 0) { parts.splice(i, 1); continue; }
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
+        g.addColorStop(0, `hsla(${p.hue},100%,62%,${p.life})`); g.addColorStop(1, `hsla(${p.hue},100%,50%,0)`);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 3, 0, 7); ctx.fill();
+      }
+      if (parts.length) requestAnimationFrame(tick); else { running = false; ctx.clearRect(0, 0, w, h); }
+    };
+    addEventListener('pointermove', e => {
+      const dx = e.clientX - px, dy = e.clientY - py; px = e.clientX; py = e.clientY;
+      const n = Math.min(4, 1 + Math.hypot(dx, dy) / 14);
+      for (let i = 0; i < n; i++) parts.push({x: (px + 6) * dpr, y: (py + 6) * dpr, vx: (Math.random() - .5) * .8 * dpr, vy: (-Math.random() * 1.4 - .4) * dpr, life: 1, r: (Math.random() * 2.4 + 1.2) * dpr, hue: 15 + Math.random() * 30});
+      if (parts.length > 160) parts.splice(0, parts.length - 160);
+      if (!running) { running = true; requestAnimationFrame(tick); }
+    }, {passive:true});
+  }
+
+
   // 3D tilt + glare on cards.
   for (const card of document.querySelectorAll('.dish, .category-card, .campaign-card, .location-card')) {
     card.classList.add('tilt');
