@@ -172,6 +172,9 @@
       }), {rootMargin: '-45% 0px -45% 0px'});
       chs.forEach(c => io.observe(c));
     }
+    // artwork only animates while it is on screen
+    const play = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('is-playing', e.isIntersecting)), {threshold: .15});
+    document.querySelectorAll('.st-inline.is-art, .st-hero, .st-media').forEach(el => play.observe(el));
   }
 
   // Header state + scroll progress.

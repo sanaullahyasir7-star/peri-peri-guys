@@ -798,3 +798,53 @@ body[data-page="story"] main{overflow:clip}
 .st-frame:not(.is-active) .st-art *{animation-play-state:paused}
 @media(max-width:900px){.st-hero::before{background:linear-gradient(180deg,#0d0907e6 30%,#0d0907b3 70%,#0d0907e6)!important}}
 .st-frame.is-art figcaption{display:none}
+
+/* ===== Story artwork v2 — transform/opacity only, paused unless on screen ===== */
+.st-art *{animation-play-state:paused!important}
+:is(.st-media.is-playing .st-frame.is-active,.st-inline.is-playing,.st-hero.is-playing) .st-art *{animation-play-state:running!important}
+:is(.st-inline.is-playing) .st-art .fill-ring{stroke-dashoffset:0}
+:is(.st-inline.is-playing) .st-art .chip{opacity:1;translate:0 0}
+.st-art .ping,.st-art .ship-bob,.st-art .smoke,.st-art .steam,.st-art .medal,.st-art .plaque,.st-art .conf,.st-art .ball-spin,.st-art .ball-shadow{transform-box:fill-box;transform-origin:center}
+.st-art .kick,.st-art .orbit{transform-box:view-box}
+.st-art .ping{animation:ping 2.2s ease-out infinite}
+.st-art .ping.p2{animation-delay:-.7s}.st-art .ping.p3{animation-delay:-1.4s}.st-art .ping.p4{animation-delay:-1.8s}
+/* sea + ship */
+.st-art .waves.w1{animation:wave60 6s linear infinite}
+.st-art .waves.w2{animation:wave90 8s linear infinite}
+.st-art .waves.w3{animation:wave120 11s linear infinite}
+@keyframes wave60{to{transform:translateX(-60px)}}
+@keyframes wave90{to{transform:translateX(-90px)}}
+@keyframes wave120{to{transform:translateX(-120px)}}
+.st-art .ship-sail{animation:sail 17s linear infinite}
+@keyframes sail{from{transform:translate(610px,352px)}to{transform:translate(-190px,352px)}}
+.st-art .ship-bob{animation:shipbob 2.8s ease-in-out infinite alternate}
+@keyframes shipbob{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-4px) rotate(2deg)}}
+.st-art .smoke{animation:smoke 2.6s ease-out infinite}.st-art .smoke.s2{animation-delay:-1.3s}
+@keyframes smoke{0%{transform:translate(0,0) scale(.6);opacity:.35}100%{transform:translate(22px,-44px) scale(2.2);opacity:0}}
+.st-art .glint{animation:glint 3.2s ease-in-out infinite}.st-art .glint.g2{animation-delay:-1s}.st-art .glint.g3{animation-delay:-2s}
+@keyframes glint{50%{opacity:.25}}
+/* soccer: ball arcs between the two players, each kicks on contact */
+.st-art .ball-x{animation:ballx 2.4s linear infinite}
+@keyframes ballx{0%,100%{transform:translate(168px,676px)}50%{transform:translate(432px,676px)}}
+.st-art .ball-y{animation:bally 2.4s infinite}
+@keyframes bally{0%{transform:translateY(0);animation-timing-function:cubic-bezier(.25,.75,.55,1)}25%{transform:translateY(-120px);animation-timing-function:cubic-bezier(.45,0,.75,.25)}50%{transform:translateY(0);animation-timing-function:cubic-bezier(.25,.75,.55,1)}75%{transform:translateY(-120px);animation-timing-function:cubic-bezier(.45,0,.75,.25)}100%{transform:translateY(0)}}
+.st-art .ball-spin{animation:spin 1.2s linear infinite}
+.st-art .ball-shadow{animation:shadowx 2.4s infinite}
+@keyframes shadowx{0%,100%{transform:translateX(-132px) scale(1);opacity:.45;animation-timing-function:ease-out}25%{transform:translateX(0) scale(.45);opacity:.2;animation-timing-function:ease-in}50%{transform:translateX(132px) scale(1);opacity:.45;animation-timing-function:ease-out}75%{transform:translateX(0) scale(.45);opacity:.2;animation-timing-function:ease-in}}
+.st-art .p-left .kick{animation:kickL 2.4s infinite}
+.st-art .p-right .kick{animation:kickR 2.4s infinite}
+@keyframes kickL{0%{transform:rotate(-48deg)}12%,84%{transform:rotate(0)}94%{transform:rotate(22deg)}100%{transform:rotate(-48deg)}}
+@keyframes kickR{0%,34%{transform:rotate(0)}44%{transform:rotate(-22deg)}50%{transform:rotate(48deg)}62%,100%{transform:rotate(0)}}
+/* clock */
+.st-art .orbit{animation:spin 14s linear infinite}
+.st-art .steam{opacity:0;animation:steam 3s ease-in-out infinite}.st-art .steam.st2{animation-delay:-1s}.st-art .steam.st3{animation-delay:-2s}
+@keyframes steam{0%{transform:translateY(8px);opacity:0}40%{opacity:.7}100%{transform:translateY(-26px);opacity:0}}
+/* awards */
+.st-art .medal{animation:bob 5s ease-in-out infinite}
+.st-art .plaque{animation:bob 5s ease-in-out -2.5s infinite}
+.st-art .shine{animation:shine-sweep 3.6s ease-in-out infinite}
+@keyframes shine-sweep{0%{transform:rotate(20deg) translateX(-90px)}45%,100%{transform:rotate(20deg) translateX(160px)}}
+.st-art .conf{animation:conf 4s linear infinite}
+@keyframes conf{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:1}100%{transform:translateY(520px) rotate(540deg);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.st-art *{animation:none!important}}
