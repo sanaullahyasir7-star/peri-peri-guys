@@ -192,26 +192,6 @@
 
   if (!fine || reduce) return;
 
-  // Custom cursor: ember dot + ring that grows into a label over cards and buttons.
-  {
-    const ring = document.createElement('div'), dot = document.createElement('div');
-    ring.className = 'cursor hide'; dot.className = 'cursor-dot hide';
-    ring.setAttribute('aria-hidden', 'true'); dot.setAttribute('aria-hidden', 'true');
-    body.append(ring, dot); document.documentElement.classList.add('has-cursor');
-    let x = innerWidth / 2, y = innerHeight / 2, rx = x, ry = y;
-    addEventListener('pointermove', e => {
-      x = e.clientX; y = e.clientY; dot.style.transform = `translate(${x}px,${y}px)`;
-      ring.classList.remove('hide'); dot.classList.remove('hide');
-      const t = e.target.closest?.('.dish, .category-card, a, button, summary, input');
-      const label = t?.matches('.dish') ? 'Order' : t?.matches('.category-card') ? 'View' : '';
-      ring.classList.toggle('hot', !!label); ring.textContent = label;
-      ring.style.opacity = t?.matches('input') ? 0 : '';
-    });
-    document.addEventListener('pointerleave', () => { ring.classList.add('hide'); dot.classList.add('hide'); });
-    const loop = () => { rx += (x - rx) * .18; ry += (y - ry) * .18; ring.style.transform = `translate(${rx}px,${ry}px)`; requestAnimationFrame(loop); };
-    loop();
-  }
-
   // 3D tilt + glare on cards.
   for (const card of document.querySelectorAll('.dish, .category-card, .campaign-card, .location-card')) {
     card.classList.add('tilt');
