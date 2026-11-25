@@ -211,6 +211,54 @@
     counters.forEach(c => { c.textContent = '0' + (c.dataset.suffix || ''); io.observe(c); });
   }
 
+  // ---------- Touch devices: bring the hover/cursor effects to phones ----------
+  if (!fine && !reduce) {
+    const cards = [...document.querySelectorAll('.dish, .category-card')];
+    // 1) Peek: the scrolling-type panel + flame badge play once as each card scrolls into view (staggered per row).
+    const peekIO = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return; peekIO.unobserve(e.target);
+      const grid = e.target.parentElement, k = [...grid.children].indexOf(e.target) % 4;
+      setTimeout(() => { e.target.classList.add('peek'); setTimeout(() => e.target.classList.remove('peek'), 1500); }, 250 + k * 220);
+    }), {threshold:.65});
+    cards.forEach(c => peekIO.observe(c));
+    // 2) Press and hold shows the panel again.
+    for (const c of cards) {
+      let t;
+      c.addEventListener('touchstart', () => { clearTimeout(t); c.classList.add('pressed'); }, {passive:true});
+      const up = () => { t = setTimeout(() => c.classList.remove('pressed'), 900); };
+      c.addEventListener('touchend', up, {passive:true}); c.addEventListener('touchcancel', up, {passive:true});
+    }
+    // 3) Scroll-linked tilt for cards and hero parallax.
+    const tiltEls = [...document.querySelectorAll('.dish, .category-card, .heat-card, .location-card, .split')];
+    const heroLayers = [...document.querySelectorAll('.hx [data-depth]')];
+    let ticking = false;
+    const frame = () => {
+      ticking = false; const vh = innerHeight;
+      for (const el of tiltEls) {
+        const r = el.getBoundingClientRect();
+        if (r.bottom < -50 || r.top > vh + 50) continue;
+        const p = Math.max(-1, Math.min(1, ((r.top + r.height / 2) - vh / 2) / (vh / 2)));
+        el.style.transform = `perspective(900px) rotateX(${(p * 7).toFixed(2)}deg) scale(${(1 - Math.abs(p) * .03).toFixed(3)})`;
+      }
+      if (scrollY < vh * 1.2) for (const l of heroLayers) l.style.translate = `0 ${(-scrollY * +l.dataset.depth / 90).toFixed(1)}px`;
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }, {passive:true});
+    frame();
+    // 4) Tap sparks on buttons (the touch version of the flame cursor).
+    document.addEventListener('pointerdown', e => {
+      const btn = e.target.closest('.pill, .mbar > *, .choice, .heat-float, .to-top'); if (!btn) return;
+      for (let i = 0; i < 10; i++) {
+        const s = document.createElement('i'); s.className = 'spark';
+        const a = Math.PI * 2 * i / 10 + Math.random() * .5, d = 28 + Math.random() * 26;
+        s.style.left = e.clientX + 'px'; s.style.top = e.clientY + 'px';
+        s.style.setProperty('--dx', `${Math.cos(a) * d}px`); s.style.setProperty('--dy', `${Math.sin(a) * d - 10}px`);
+        body.append(s); setTimeout(() => s.remove(), 700);
+      }
+    }, {passive:true});
+  }
+  // Haptic tick on the heat slider (Android; iOS ignores it).
+  document.querySelector('#heat-range')?.addEventListener('input', () => navigator.vibrate?.(10));
+
   if (!fine || reduce) return;
 
   // 3D tilt + glare on cards.

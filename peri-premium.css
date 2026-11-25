@@ -505,3 +505,27 @@ dialog[data-mode="navigation"] .close{color:var(--cream);width:46px;height:46px;
 .location-card summary::-webkit-details-marker{display:none}
 .location-card summary::after{content:"+";font-size:1.2rem;color:var(--orange);transition:rotate .3s var(--ease)}
 .location-card details[open] summary::after{rotate:45deg}
+
+/* ===== Touch: hover effects as scroll "peek" and press-and-hold ===== */
+@media(hover:none){
+  .hov{display:block!important}
+  .dish:is(.peek,.pressed) .hov,.category-card:is(.peek,.pressed) .hov{clip-path:inset(0)}
+  .dish:is(.peek,.pressed) .hov-row,.category-card:is(.peek,.pressed) .hov-row{animation-play-state:running}
+  .feature-grid .dish-media .details,.category-media .category-cta{display:grid!important;place-items:center;inset:50% auto auto 50%!important;width:92px;height:92px;min-height:0!important;padding:10px 0 0!important;border-radius:50%!important;background:var(--fire)!important;color:var(--ink)!important;font:400 1.15rem/1 var(--display)!important;letter-spacing:.04em;z-index:2;opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(-30deg)!important;transition:opacity .3s,transform .55s var(--ease)!important;box-shadow:0 14px 30px -8px #ff5a1f99}
+  .feature-grid .dish-media .details{width:74px;height:74px;font-size:.95rem!important}
+  .feature-grid .dish-media .details::before,.category-media .category-cta::before{content:"";position:absolute;inset:-7px;border-radius:50%;border:1.5px dashed #ffb547aa;animation:spin 9s linear infinite}
+  .feature-grid .dish-media .details::after,.category-media .category-cta::after{content:"🔥";position:absolute;top:8px;left:50%;translate:-50% 0;font-size:.85rem}
+  .dish:is(.peek,.pressed) .details,.category-card:is(.peek,.pressed) .category-cta{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0deg)!important;transition-delay:.1s!important}
+  .dish:is(.peek,.pressed) .dish-media img,.category-card:is(.peek,.pressed) .category-media img{transform:scale(1.12)}
+  .dish,.category-card,.heat-card,.location-card,.split{transition:transform .25s linear;will-change:transform}
+  .pill:active,.choice:active,.category-card:active,.dish:active{scale:.97}
+  .pill,.choice{transition:scale .2s var(--ease),background .3s,color .3s}
+}
+@media(hover:none) and (max-width:600px){
+  .hov-row{font-size:26px}
+  .feature-grid .dish .hov-row{font-size:22px}
+}
+.spark{position:fixed;z-index:60;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fff3c4,#ff7a1f 60%,#d7261e);box-shadow:0 0 8px #ff7a1f;animation:spark .65s var(--ease) forwards}
+@keyframes spark{to{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
+@media(prefers-reduced-motion:reduce){.spark{display:none}}
+@media(max-width:900px){.mobile-toggle{margin-left:auto}}
