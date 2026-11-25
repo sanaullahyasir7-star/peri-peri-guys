@@ -103,7 +103,7 @@ function home() {
     <div class="hx-glow" aria-hidden="true"></div>
     <div class="hx-grid">
       <div class="hx-copy">
-        <p class="hx-eyebrow"><span class="hx-dot"></span>Flame-grilled · Zabiha Halal · Long Island</p>
+        <p class="hx-eyebrow"><span class="hx-dot"></span>Flame-grilled · Zabiha Halal<span class="hx-loc"> · Long Island</span></p>
         <h1 class="hx-title" id="home-headline"><span class="hx-line">It’s all about</span><span class="hx-line">the <em>sauce.</em></span></h1>
         <p class="hx-lede">Chicken marinated for over 24 hours, flame-grilled to order and basted in peri-peri made with African bird’s eye chili.</p>
         <div class="hx-actions">${openButton('Order now','order','glow')}${openButton('Find your heat','sauces','ghost')}</div>
@@ -275,7 +275,7 @@ const content = document.querySelector('#dialog-content');
 const title = text => `<h2 id="dialog-title">${text}</h2>`;
 const orderChoices = mode => `<div class="dialog-actions">${stores.map(store => link(store.name,client + '/menu/' + store.slug,'dark')).join('')}</div><p>Choose ${mode === 'delivery' ? 'delivery' : 'pickup'} in the ordering menu.</p>`;
 const dialogs = {
-  navigation: () => title('Menu') + `<nav class="mobile-nav" aria-label="Mobile navigation">${navItems}<a href="${page('locations')}">Find a location</a><a href="${client}/login">Sign in</a></nav>`,
+  navigation: () => title('Menu') + `<nav class="mobile-nav" aria-label="Mobile navigation">${navItems}<a href="${page('locations')}">Find a location</a><a href="${client}/login">Sign in</a></nav><div class="drawer-cta">${openButton('Order now','order','glow')}<p>Order with the app</p>${appStores}</div>`,
   order: () => title('Ready to order?') + `<p>Choose how you’d like to order, then select a location.</p><div class="choices" role="group" aria-label="Order method"><button class="choice" data-method="pickup" aria-pressed="true">Pickup</button><button class="choice" data-method="delivery" aria-pressed="false">Delivery</button>${link('Catering',client + '/catering')}</div><div id="order-choices">${orderChoices('pickup')}</div>`,
   sauces: () => title('Find your peri-peri sauce') + `<div class="choices" role="group" aria-label="Sauce flavors">${sauceList.map(([name],index) => `<button class="choice" data-sauce="${index}" aria-pressed="${index === 0}">${name}</button>`).join('')}</div><p id="sauce-description" aria-live="polite">${sauceList[0][1]}</p>${link('View ordering menu',client + '/menu','dark')}`,
   welcome: () => title('Find your nearest Peri-Peri Guys') + `<p>Choose a restaurant to see its hours and start your order.</p><div class="welcome-actions">${openButton('Use my location','welcome-geo','dark')}<button type="button" class="plain" data-open="locations">Choose a location</button><button type="button" class="plain" data-open="dismiss">Maybe later</button></div>`,

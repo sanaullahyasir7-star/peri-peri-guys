@@ -41,6 +41,27 @@
   }
   for (const cta of document.querySelectorAll('.category-cta')) cta.textContent = 'View menu';
 
+  // Mobile: bottom action bar + swipe dots for promo carousels.
+  {
+    const bar = document.createElement('nav'); bar.className = 'mbar'; bar.setAttribute('aria-label', 'Quick actions');
+    bar.innerHTML = `<button type="button" class="mbar-main" data-open="order">Order now</button><button type="button" data-open="sauces"><span aria-hidden="true">🌶</span>Sauces</button><a href="?page=locations"><span aria-hidden="true">📍</span>Find us</a>`;
+    body.append(bar);
+    for (const grid of document.querySelectorAll('.campaign-grid')) {
+      const dots = document.createElement('div'); dots.className = 'swipe-dots'; dots.setAttribute('aria-hidden', 'true');
+      dots.innerHTML = [...grid.children].map(() => '<i></i>').join('');
+      grid.after(dots);
+      const sync = () => {
+        const mid = grid.scrollLeft + grid.clientWidth / 2;
+        let best = 0, dist = Infinity;
+        [...grid.children].forEach((c, k) => { const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < dist) { dist = d; best = k; } });
+        [...dots.children].forEach((d, k) => d.classList.toggle('on', k === best));
+      };
+      grid.addEventListener('scroll', sync, {passive:true}); sync();
+      // start on the middle card so the carousel reads as swipeable
+      if (matchMedia('(max-width: 600px)').matches && grid.children[1]) requestAnimationFrame(() => { grid.scrollLeft = grid.children[1].offsetLeft - (grid.clientWidth - grid.children[1].offsetWidth) / 2; sync(); });
+    }
+  }
+
   // Header state + scroll progress.
   const progress = document.querySelector('.progress');
   const onScroll = () => {
