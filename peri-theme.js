@@ -50,7 +50,7 @@
       if (busy || order[0] === target) return; busy = true;
       const front = cards[order[0]];
       const finish = () => { front.classList.remove('fly'); order = [target, ...order.filter(i => i !== target)]; paint(); setTimeout(() => busy = false, 300); };
-      if (reduce) { finish(); return; }
+      if (reduce || grid.classList.contains('fanned')) { finish(); return; }
       front.classList.add('fly'); setTimeout(finish, 600);
     };
     const next = () => bringToFront(order[1]);
@@ -58,7 +58,27 @@
     [...nav.children].forEach((b, i) => b.addEventListener('click', () => bringToFront(i)));
     paint();
     let timer, inView = false, hover = false;
-    const tick = () => { clearInterval(timer); if (!reduce) timer = setInterval(() => { if (inView && !hover && !document.hidden && matchMedia('(min-width: 601px)').matches) next(); }, 4200); };
+    const tick = () => { clearInterval(timer); if (!reduce) timer = setInterval(() => { if (inView && !hover && !document.hidden && matchMedia('(min-width: 601px)').matches && (+grid.style.getPropertyValue('--fan') || 0) < .3) next(); }, 4200); };
+    // scroll-linked fan: stacked -> spread wide while the deck crosses the middle of the screen -> stacked again
+    if (!reduce) {
+      const desk = matchMedia('(min-width: 601px)');
+      let raf = 0;
+      const fan = () => {
+        raf = 0;
+        if (!desk.matches) { grid.style.setProperty('--fan', 0); return; }
+        const r = grid.getBoundingClientRect(), vh = innerHeight;
+        const mid = (r.top + Math.min(r.height, vh) / 2 - vh / 2) / (vh * .55);
+        const t = Math.max(0, 1 - Math.abs(mid));
+        const e = t * t * (3 - 2 * t);
+        grid.style.setProperty('--fan', e.toFixed(3));
+        grid.classList.toggle('fanned', e > .5);
+      };
+      addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(fan); }, {passive:true});
+      addEventListener('resize', fan); fan();
+    }
+    // phones: each card swings in from alternating sides
+    const swingIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('swung'); swingIO.unobserve(e.target); } }), {threshold:.25});
+    cards.forEach((c, i) => { c.style.setProperty('--side', i % 2 ? 1 : -1); swingIO.observe(c); });
     new IntersectionObserver(([e]) => { inView = e.isIntersecting; }).observe(grid);
     grid.addEventListener('pointerenter', () => hover = true); grid.addEventListener('pointerleave', () => hover = false);
     grid.addEventListener('focusin', () => hover = true); grid.addEventListener('focusout', () => hover = false);
