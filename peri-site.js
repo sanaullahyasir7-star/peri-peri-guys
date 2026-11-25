@@ -15,7 +15,7 @@ const photos = {
   bogo: product('HstHkxn8yNmi-2aM2x1CGJ5R3'),
   sides: image('9f423590-be94-4ef4-90de-e4c56623666b'),
   shakes: image('71bfaa28-fb90-41ff-a5a7-d05ece092ebe.jpg'),
-  catering: image('d6adb646-cd38-45ef-8f8e-b54b-42eca19a12c7',1920),
+  catering: product('UB0AHzrjjUvY-ZmnliwFZvvkb'),
   hicksville: image('5ece26bd-39ec-4483-b997-2960209409c7',1920),
   story: image('71d1c239-d06e-4c2b-8f7a-7b99f62c65e2'),
   rewards: image('9ae04eee-3dbf-4e33-896c-999aa9422ccd')
@@ -62,7 +62,7 @@ const sauceList = [
 
 const navItems = `<a href="${page('menu')}">Menu</a><a href="${page('catering')}">Catering</a><a href="${page('rewards')}">Rewards</a><button class="plain" type="button" data-open="sauces">Peri-Peri Sauces</button><a href="${page('story')}">Our Story</a>`;
 document.querySelector('#header').innerHTML = `
-  <a class="logo-link" href="?" aria-label="Peri-Peri Guys home">${picture(photos.logo,'',true)}<span>Peri-Peri Guys</span></a>
+  <a class="logo-link" href="?" aria-label="Peri-Peri Guys home"><span class="logo-mark">${picture(photos.logo,'',true)}</span><span class="logo-name">Peri-Peri Guys</span></a>
   <nav class="nav" aria-label="Main navigation">${navItems}</nav>
   <div class="account"><button class="plain" type="button" data-open="locations">Find a location</button><a href="${client}/login">Sign in</a><a href="${page('rewards')}">Join</a></div>
   ${openButton('Order now','order','order-float')}
@@ -88,10 +88,13 @@ function campaign(title, cards, dark = false) {
     </div></section>`;
 }
 
+// Each track contains two identical runs so it can loop without a seam.
+const orderRun = '<span>ORDER NOW&nbsp; ORDER NOW&nbsp; ORDER NOW&nbsp; ORDER NOW&nbsp;</span>';
+const orderRows = Array.from({length:12}, () => '<span class="order-track">' + orderRun + orderRun + '</span>').join('');
 function dishCard(dish) {
   const details = `<button type="button" class="plain details" data-dish="${dishes.indexOf(dish)}" aria-label="Details for ${dish.name}">Details</button>`;
   return `<article class="dish${dish.photo ? '' : ' dish-no-photo'}" data-category="${dish.category.replaceAll('&','&amp;')}">
-    ${dish.photo ? `<div class="dish-media">${picture(dish.photo,dish.name)}${details}</div>` : ''}
+    ${dish.photo ? `<button type="button" class="dish-media food-tile" data-dish="${dishes.indexOf(dish)}" aria-label="Details for ${dish.name}">${picture(dish.photo,'')}<span class="food-motion" aria-hidden="true"><span class="order-wall">${orderRows}</span><span class="detail-disc">Details</span></span></button>` : ''}
     <div class="card-body"><h3>${dish.name}</h3><p class="dish-description">${dish.description}</p><p class="dish-price">$${dish.price}</p>
     ${dish.photo ? '' : details}
     ${openButton('Order','order','dark')}</div></article>`;
@@ -145,7 +148,7 @@ function home() {
     [photos.skewers,'Find your flavor','Pick a sauce for your flame-grilled chicken.',openButton('Explore sauces','sauces','dark')],
     [photos.catering,'Feed the whole crew','Whole chickens and sharing platters for your next event.',link('Order catering',page('catering'))]
   ])}
-  ${stripe}<section class="wrap section"><h2 data-reveal>The crowd pleasers</h2><div class="feature-grid">${dishes.slice(0,5).map(dishCard).join('')}</div></section>
+  ${stripe}<section class="wrap section featured" aria-labelledby="featured-title"><h2 id="featured-title" data-reveal>The crowd pleasers</h2><div class="feature-grid">${dishes.slice(0,5).map(dishCard).join('')}</div></section>
   <section class="wrap section categories"><h2 data-reveal>Hungry?</h2><div class="category-grid">
   ${categories.map(([name,src]) => `<a class="category-card" href="${page('menu',name)}"><div class="category-media">${src ? picture(src) : '<div class="category-fallback" aria-hidden="true"></div>'}<span class="category-cta" aria-hidden="true">View menu</span></div><span>${name}</span></a>`).join('')}
   </div><p class="section-action">${link('View full menu',page('menu'),'dark')}</p></section>
@@ -155,6 +158,7 @@ function home() {
     [photos.wings,'Peri-Wings','Pick one flavor or try a mix of sauces.',link('Explore wings',page('menu','Wings'))]
   ],true)}
   <section class="wrap section rewards-feature"><div class="split"><div class="split-copy"><strong class="section-tag">Peri-Peri Guys Rewards</strong><h2 data-reveal>Earn points for free food</h2><p>Join Peri-Peri Guys Rewards and earn points when you order online.</p>${link('Explore rewards',page('rewards'))}${appStores}</div>${picture(photos.rewards)}</div></section>
+  <figure class="venue-cover feast-cover"><div data-parallax="48">${picture(photos.hero,"Flame-grilled peri-peri chicken")}</div></figure>
   <section class="catering-feature">${stripe}<div class="feature-copy">
     <p class="section-tag">Feed the crowd</p><h2 data-reveal>Catering for<br>your next event</h2>
     <p>Order whole flame-grilled chickens, sharing platters, and sides for an office lunch, a birthday, or a family get-together. Choose your peri-peri sauce for the group.</p>
@@ -189,10 +193,10 @@ function storeCards(items = stores) {
 const screens = {
   home,
   menu,
-  catering: () => inner('Feed the crowd','Catering for your next event.',photos.catering,`<h2>Whole chickens and sharing platters</h2><p>Choose flame-grilled chicken, sides, and a sauce for your group.</p>${link('Explore live catering options',client + '/catering')}`),
-  rewards: () => inner('Peri-Peri Guys Rewards','Earn points when you order online.',photos.rewards,`<h2>Order. Earn. Redeem.</h2><p>Join the rewards program, earn points on online orders, and redeem them for food.</p>${link('Join or sign in',client + '/login')}`),
-  locations: () => inner('Find a Peri-Peri Guys','Visit us in Hicksville or Selden, New York.',photos.hero,`<h2>Our locations</h2><div id="location-list">${storeCards()}</div><p class="section-action">${openButton('Find the closest location','locations','dark')}</p>`),
-  story: () => inner('Our story','It’s all about the sauce.',photos.story,`<h2>From the sauce to the grill</h2><p>Our peri-peri gets its kick from African bird’s eye chilies. We marinate our chicken for over 24 hours and finish it over the flame.</p>${link('Read the full story',client + '/story','dark')}`)
+  catering: () => inner('Catering for any occasion','Bring flame-grilled peri-peri to the table.',photos.catering,`<div class="page-intro"><h2>Feed the whole crew</h2><p>Choose whole chickens, sharing platters, and sides for your group.</p>${link('Order catering',client + '/catering')}</div><div class="occasion-grid">${[[photos.sandwich,'Office lunches'],[photos.whole,'Family gatherings'],[photos.wings,'Game day']].map(([src,name])=>`<article>${picture(src)}<h3>${name}</h3></article>`).join('')}</div><div class="page-intro"><h2>Catering questions?</h2>${link('Contact a restaurant',page('locations'),'dark')}</div>`),
+  rewards: () => inner('Peri-Peri Guys Rewards','Earn points when you order online.',photos.rewards,`<div class="reward-steps"><article><h2>Join</h2><p>Sign in or create your rewards account.</p></article><article><h2>Earn</h2><p>Collect points on online orders.</p></article><article><h2>Redeem</h2><p>Use your points for food.</p></article></div><div class="page-intro">${link('Join or sign in',client + '/login')}<h2>Rewards questions</h2><details><summary>Where can I see my rewards?</summary><p>Sign in to your Peri-Peri Guys account to see your points and available rewards.</p></details><details><summary>Can I order in the app?</summary><p>Download the restaurant app to get started.</p>${appStores}</details></div>`),
+  locations: () => inner('Find a Peri-Peri Guys','Hicksville and Selden, New York.',photos.hero,`<div class="finder-heading"><h2>Our restaurants</h2>${openButton('Find the closest location','locations','dark')}</div>${storeCards()}`),
+  story: () => inner('Our story','It’s all about the sauce.',photos.story,`<div class="split"><div class="split-copy"><h2>From chili to grill</h2><p>African bird’s eye chilies give peri-peri its kick. We marinate our chicken for over 24 hours before flame grilling it.</p>${openButton('Explore our sauces','sauces')}</div>${picture(photos.whole,'Flame-grilled peri chicken')}</div><div class="page-intro"><h2>Visit us on Long Island</h2>${link('Find a restaurant',page('locations'),'dark')}</div>`)
 };
 const params = new URLSearchParams(location.search);
 const requested = params.get('page');
@@ -239,7 +243,7 @@ if (current === 'home' && !matchMedia('(prefers-reduced-motion: reduce)').matche
       const leaving = clamp((bottom - height * .13) / (height * .53));
       const progress = desktop.matches ? Math.min(entering,leaving) : 1;
       const stacked = 1 - progress * progress * (3 - 2 * progress);
-      const stackDistance = group.children[1].offsetLeft - group.children[0].offsetLeft;
+      const stackDistance = group.children[0].offsetWidth;
       targets.push([group,'--fan-offset',stackDistance * stacked]);
     }
     for (const layer of layers) {
@@ -368,3 +372,8 @@ if (current === 'menu') {
   search.addEventListener('input',updateMenu);
   updateMenu();
 }
+
+document.addEventListener('pointerdown', event => {
+  const active = document.querySelector('.food-tile.touch-active');
+  if (active && !active.contains(event.target)) active.classList.remove('touch-active');
+});

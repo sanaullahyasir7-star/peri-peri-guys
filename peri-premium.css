@@ -242,12 +242,6 @@ body:not([data-page="home"]) .pill.order-float{position:static}
 @media(max-width:900px){.pill.order-float{position:static;background:var(--fire);color:var(--ink)}}
 .category-fallback{opacity:1;background:radial-gradient(circle at 30% 25%,#ff8a3d66,transparent 55%),radial-gradient(circle at 75% 80%,#d7261e55,transparent 50%),var(--ink-2)}
 
-/* logo: the image file is 160px tall, so cap it and hide the text wordmark while the image shows */
-.logo-link img{display:block;height:46px;width:auto;max-width:180px;object-fit:contain;transition:height .35s var(--ease)}
-body.scrolled .logo-link img{height:38px}
-.logo-link:has(img) span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-body[data-page="home"]:not(.scrolled) .logo-link img{filter:drop-shadow(0 2px 10px #0008)}
-@media(max-width:900px){.logo-link img{height:36px}body.scrolled .logo-link img{height:32px}}
 .footer-extras img{max-height:72px;width:auto}
 
 /* hover reveal on every dish + category card: photo wipes away to a scrolling type panel with a spinning flame badge */
@@ -331,9 +325,6 @@ body::after{content:"";position:fixed;inset:-50%;z-index:30;pointer-events:none;
   a,button,summary,label,select,[role=button],.dish,.dish *,.category-card,.category-card *,.campaign-card .pill,.heat-range{cursor:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22 viewBox=%220 0 32 32%22%3E%3Cg transform=%22rotate%28-45 16 16%29%22 stroke=%22%23120d0b%22 stroke-width=%220.8%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M10.5 2.5h1.8v7h1.6v-7h1.8v7h1.6v-7h1.8v7h1.6v-7h1.8v9.5a6 6 0 0 1-4.3 5.7v11.3a2 2 0 0 1-4 0V17.7a6 6 0 0 1-4.3-5.7z%22 fill=%22%23ff7a1f%22/%3E%3C/g%3E%3C/svg%3E") 6 6,pointer!important}
   input:not([type=range]),textarea{cursor:text!important}
 }
-.logo-link img{height:58px}
-body.scrolled .logo-link img{height:46px}
-@media(max-width:900px){.logo-link img{height:40px}body.scrolled .logo-link img{height:36px}}
 
 /* ===================== MOBILE PERFECTION PASS ===================== */
 /* range: 44px touch area, styled track */
@@ -529,3 +520,35 @@ dialog[data-mode="navigation"] .close{color:var(--cream);width:46px;height:46px;
 @keyframes spark{to{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
 @media(prefers-reduced-motion:reduce){.spark{display:none}}
 @media(max-width:900px){.mobile-toggle{margin-left:auto}}
+
+/* ===== Reconcile with main: logo, dish overlay, phone carousel ===== */
+.logo-link .logo-name{font-size:28px;letter-spacing:.02em}
+.logo-mark{transition:transform .5s var(--ease)}
+.logo-link:hover .logo-mark{transform:rotate(-8deg) scale(1.06)}
+body[data-page="home"]:not(.scrolled) .logo-mark img{filter:drop-shadow(0 2px 8px #0009)}
+@media(max-width:900px){.logo-link .logo-name{font-size:24px}}
+
+/* one dish effect: premium scrolling panel (.hov) + main's disc restyled as the flame badge */
+.food-motion{background:none!important;opacity:1!important;z-index:2;transition:none}
+.order-wall{display:none}
+.detail-disc{width:118px;max-width:none;background:var(--fire);color:var(--ink);font:400 1.5rem/1 var(--display);letter-spacing:.04em;padding-top:12px;box-shadow:0 20px 40px -10px #ff5a1f99;opacity:0;transform:scale(.3) rotate(-30deg);transition:opacity .35s,transform .6s var(--ease)}
+.detail-disc::before{content:"";position:absolute;inset:-10px;border-radius:50%;border:1.5px dashed #ffb547aa;animation:spin 9s linear infinite}
+.detail-disc::after{content:"🔥";position:absolute;top:13px;left:50%;translate:-50% 0;font-size:1.05rem}
+@media(hover:hover){.dish:is(:hover,:focus-within) .detail-disc{opacity:1;transform:none;transition-delay:.12s}}
+@media(hover:none){.dish:is(.peek,.pressed) .detail-disc{opacity:1;transform:none;transition-delay:.1s}}
+.food-tile:focus-visible .detail-disc{opacity:1;transform:none}
+@media(max-width:600px){.detail-disc{width:70px;font-size:.95rem;padding-top:8px}.detail-disc::after{top:6px;font-size:.8rem}.detail-disc::before{inset:-6px}}
+
+@media(max-width:600px){
+  .campaign-band .wrap.campaign,.hot .wrap.campaign{width:100%!important}
+  .campaign-band .campaign .campaign-title{padding-inline:16px}
+  .campaign-band .campaign-grid{gap:14px!important;margin-inline:0!important;padding:8px 16px 18px!important;justify-items:normal}
+  .campaign-band .campaign-grid .campaign-card,.hot .campaign-card{width:auto;min-height:0!important}
+  .campaign-band:not(.hot) .campaign-card .card-body{min-height:0!important}
+  .feature-grid .dish{min-height:0!important}
+}
+.reward-steps article{border-radius:var(--radius);box-shadow:0 24px 50px -30px #120d0b66}
+.reward-steps article:first-child{background:white}
+.reward-steps h2{font-size:clamp(48px,5vw,72px)}
+.occasion-grid article{background:white;border-radius:var(--radius);box-shadow:0 24px 50px -30px #120d0b66}
+.occasion-grid h3{font:400 1.8rem/1 var(--display);letter-spacing:.02em;padding:18px 0 22px;margin:0}
