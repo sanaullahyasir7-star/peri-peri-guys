@@ -75,6 +75,7 @@
   // Hero: split headline into words and play the entrance.
   const hero = document.querySelector('.hx');
   if (hero) {
+    if (typeof photos !== 'undefined') hero.style.setProperty('--hero-img', `url("${photos.hero}")`);
     let i = 0;
     for (const line of hero.querySelectorAll('.hx-line')) {
       for (const node of [...line.childNodes]) {
