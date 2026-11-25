@@ -215,20 +215,19 @@
   // ---------- Touch devices: bring the hover/cursor effects to phones ----------
   if (!fine && !reduce) {
     const cards = [...document.querySelectorAll('.dish, .category-card')];
-    // 1) Peek: the scrolling-type panel + flame badge play once as each card scrolls into view (staggered per row).
-    const peekIO = new IntersectionObserver(es => es.forEach(e => {
-      if (!e.isIntersecting) return; peekIO.unobserve(e.target);
-      const grid = e.target.parentElement, k = [...grid.children].indexOf(e.target) % 4;
-      setTimeout(() => { e.target.classList.add('peek'); setTimeout(() => e.target.classList.remove('peek'), 1500); }, 250 + k * 220);
-    }), {threshold:.65});
-    cards.forEach(c => peekIO.observe(c));
-    // 2) Press and hold shows the panel again.
-    for (const c of cards) {
-      let t;
-      c.addEventListener('touchstart', () => { clearTimeout(t); c.classList.add('pressed'); }, {passive:true});
-      const up = () => { t = setTimeout(() => c.classList.remove('pressed'), 900); };
-      c.addEventListener('touchend', up, {passive:true}); c.addEventListener('touchcancel', up, {passive:true});
-    }
+    // 1+2) Tap to reveal: the scrolling-type panel + flame badge play only when someone taps a card photo.
+    //      First tap on the photo shows it; a second tap does the normal action (details / category menu).
+    let open = null, closeT;
+    const close = () => { open?.classList.remove('pressed'); open = null; clearTimeout(closeT); };
+    document.addEventListener('click', e => {
+      const media = e.target.closest('.dish-media, .category-media');
+      const card = media?.closest('.dish, .category-card');
+      if (!card) { if (open && !open.contains(e.target)) close(); return; }
+      if (card === open) { close(); return; }
+      e.preventDefault(); e.stopPropagation();
+      close(); open = card; card.classList.add('pressed');
+      closeT = setTimeout(close, 4000);
+    }, true);
     // 3) Scroll-linked tilt for cards and hero parallax.
     const tiltEls = [...document.querySelectorAll('.dish, .category-card, .heat-card, .location-card, .split')];
     const heroLayers = [...document.querySelectorAll('.hx [data-depth]')];
