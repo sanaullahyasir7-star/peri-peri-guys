@@ -16,6 +16,20 @@
     else img.addEventListener('error', fail, {once:true});
   }
 
+  // Brand intro (once per visit, home only).
+  if (body.dataset.page === 'home' && !reduce) {
+    let seen = false; try { seen = sessionStorage.getItem('ppg-intro') === '1'; sessionStorage.setItem('ppg-intro', '1'); } catch {}
+    if (!seen) {
+      const intro = document.createElement('div'); intro.className = 'intro'; intro.setAttribute('aria-hidden', 'true');
+      const letters = (t, cls = '') => [...t].map((c, k) => `<span class="${cls}" style="--i:${k}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+      intro.innerHTML = `<div class="intro-mark"><div class="intro-word">${letters('PERI-PERI ')}${letters('GUYS', 'accent')}</div><div class="intro-bar"><i></i></div></div>`;
+      body.append(intro);
+      body.classList.add('intro-on');
+      setTimeout(() => intro.classList.add('out'), 1350);
+      setTimeout(() => { intro.remove(); body.classList.remove('intro-on'); }, 2400);
+    }
+  }
+
   // Hover panels with scrolling type on every dish and category card.
   for (const media of document.querySelectorAll('.dish-media, .category-media')) {
     const card = media.closest('.dish, .category-card');
@@ -57,7 +71,8 @@
         }
       }
     }
-    requestAnimationFrame(() => requestAnimationFrame(() => hero.classList.add('ready')));
+    const go = () => requestAnimationFrame(() => requestAnimationFrame(() => hero.classList.add('ready')));
+    if (document.querySelector('.intro')) setTimeout(go, 1500); else go();
 
     // Pointer parallax on the plate, chips and minis.
     if (fine && !reduce) {
@@ -120,11 +135,44 @@
     range.addEventListener('input', update); update();
   }
 
+  // Headings rise word by word.
+  for (const h of document.querySelectorAll('main h2:not(#heat-title):not(.campaign-title), .inner-hero h1')) {
+    let i = 0;
+    const walk = node => {
+      for (const n of [...node.childNodes]) {
+        if (n.nodeType === 3) {
+          const f = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(part => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { f.append(part); return; }
+            const w = document.createElement('span'); w.className = 'w';
+            const inner = document.createElement('span'); inner.textContent = part; w.style.setProperty('--i', i++);
+            w.append(inner); f.append(w);
+          });
+          n.replaceWith(f);
+        } else if (n.nodeType === 1 && n.tagName !== 'BR') walk(n);
+      }
+    };
+    walk(h); h.classList.add('split-h'); h.classList.remove('rv');
+  }
+  // Large photos reveal from a rounded inset.
+  for (const el of document.querySelectorAll('.venue-cover, .split > img, .split > .img-ph, .location-feature-grid > img')) el.classList.add('pr');
+
+  // Footer wordmark + back to top.
+  const end = document.querySelector('.footer-end');
+  if (end) {
+    const mega = document.createElement('div'); mega.className = 'mega';
+    mega.innerHTML = `<span class="mega-word" aria-hidden="true">Peri-Peri Guys</span><div class="mega-meta"><span>Hicksville · Selden · New York</span><span>Flame-grilled · Zabiha Halal</span><button type="button" class="to-top">Back to top ↑</button></div>`;
+    end.before(mega);
+    mega.querySelector('.to-top').addEventListener('click', () => scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'}));
+  }
+  for (const a of document.querySelectorAll('.campaign-card .pill, .feature-actions .pill, .section-action .pill, .split-copy > .pill')) a.classList.add('arrow');
+
   // Scroll reveals with stagger.
   const groups = ['.campaign-grid', '.feature-grid', '.category-grid', '.stats', '.listing', '.locations', '.heat'];
   const targets = [];
   for (const sel of groups) for (const g of document.querySelectorAll(sel)) [...g.children].forEach((c, k) => { c.classList.add('rv'); c.style.setProperty('--d', `${k * 80}ms`); targets.push(c); });
-  for (const el of document.querySelectorAll('.feature-copy > *, .split, .location-feature-grid, .section > h2, .ticker')) { if (!el.classList.contains('rv')) { el.classList.add('rv'); targets.push(el); } }
+  for (const el of document.querySelectorAll('.feature-copy > *, .split, .location-feature-grid, .section > h2, .ticker, .split-h, .pr, .mega')) { if (!targets.includes(el)) { if (!el.matches('.split-h, .pr, .mega')) el.classList.add('rv'); targets.push(el); } }
   if (!reduce && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), {rootMargin:'0px 0px -10% 0px'});
     targets.forEach(t => io.observe(t));
@@ -143,6 +191,26 @@
   }
 
   if (!fine || reduce) return;
+
+  // Custom cursor: ember dot + ring that grows into a label over cards and buttons.
+  {
+    const ring = document.createElement('div'), dot = document.createElement('div');
+    ring.className = 'cursor hide'; dot.className = 'cursor-dot hide';
+    ring.setAttribute('aria-hidden', 'true'); dot.setAttribute('aria-hidden', 'true');
+    body.append(ring, dot); document.documentElement.classList.add('has-cursor');
+    let x = innerWidth / 2, y = innerHeight / 2, rx = x, ry = y;
+    addEventListener('pointermove', e => {
+      x = e.clientX; y = e.clientY; dot.style.transform = `translate(${x}px,${y}px)`;
+      ring.classList.remove('hide'); dot.classList.remove('hide');
+      const t = e.target.closest?.('.dish, .category-card, a, button, summary, input');
+      const label = t?.matches('.dish') ? 'Order' : t?.matches('.category-card') ? 'View' : '';
+      ring.classList.toggle('hot', !!label); ring.textContent = label;
+      ring.style.opacity = t?.matches('input') ? 0 : '';
+    });
+    document.addEventListener('pointerleave', () => { ring.classList.add('hide'); dot.classList.add('hide'); });
+    const loop = () => { rx += (x - rx) * .18; ry += (y - ry) * .18; ring.style.transform = `translate(${rx}px,${ry}px)`; requestAnimationFrame(loop); };
+    loop();
+  }
 
   // 3D tilt + glare on cards.
   for (const card of document.querySelectorAll('.dish, .category-card, .campaign-card, .location-card')) {
