@@ -196,14 +196,63 @@ const screens = {
   catering: () => inner('Catering for any occasion','Bring flame-grilled peri-peri to the table.',photos.catering,`<div class="page-intro"><h2>Feed the whole crew</h2><p>Choose whole chickens, sharing platters, and sides for your group.</p>${link('Order catering',client + '/catering')}</div><div class="occasion-grid">${[[photos.sandwich,'Office lunches'],[photos.whole,'Family gatherings'],[photos.wings,'Game day']].map(([src,name])=>`<article>${picture(src)}<h3>${name}</h3></article>`).join('')}</div><div class="page-intro"><h2>Catering questions?</h2>${link('Contact a restaurant',page('locations'),'dark')}</div>`),
   rewards: () => inner('Peri-Peri Guys Rewards','Earn points when you order online.',photos.rewards,`<div class="reward-steps"><article><h2>Join</h2><p>Sign in or create your rewards account.</p></article><article><h2>Earn</h2><p>Collect points on online orders.</p></article><article><h2>Redeem</h2><p>Use your points for food.</p></article></div><div class="page-intro">${link('Join or sign in',client + '/login')}<h2>Rewards questions</h2><details><summary>Where can I see my rewards?</summary><p>Sign in to your Peri-Peri Guys account to see your points and available rewards.</p></details><details><summary>Can I order in the app?</summary><p>Download the restaurant app to get started.</p>${appStores}</details></div>`),
   locations: () => inner('Find a Peri-Peri Guys','Hicksville and Selden, New York.',photos.hero,`<div class="finder-heading"><h2>Our restaurants</h2>${openButton('Find the closest location','locations','dark')}</div>${storeCards()}`),
-  story: () => inner('Our story','It’s all about the sauce.',photos.story,`<div class="split"><div class="split-copy"><h2>From chili to grill</h2><p>African bird’s eye chilies give peri-peri its kick. We marinate our chicken for over 24 hours before flame grilling it.</p>${openButton('Explore our sauces','sauces')}</div>${picture(photos.whole,'Flame-grilled peri chicken')}</div><div class="page-intro"><h2>Visit us on Long Island</h2>${link('Find a restaurant',page('locations'),'dark')}</div>`)
+  story: () => {
+    const chapters = [
+      {n:'01', when:'15th century', title:'The sauce has a 500-year history', img:photos.story, alt:'African bird’s eye chilies and peri-peri sauce',
+       text:'The African Bird’s Eye chili traveled from Mozambique to Portuguese kitchens in the 15th century, spreading through South Africa and Europe. That journey lives in every bottle of Peri-Peri Guys sauce.'},
+      {n:'02', when:'2020', title:'How it started', img:photos.sandwich, alt:'Peri-Peri Guys sandwiches',
+       text:'Hafeez Raja moved from Glasgow to New York and couldn’t find peri-peri up to his standards, so he started shipping ingredients from the UK. A pick-up soccer game introduced him to Greg Raposo — a New York native of Portuguese descent — and their partnership launched in 2020.'},
+      {n:'03', when:'Day one', title:'The 24-hour commitment', img:photos.whole, alt:'Flame-grilled peri-peri chicken',
+       text:'Every bird is organic, steroid-free, and Zabiha Halal — marinated over 24 hours before it ever sees the flame. That standard was set on day one and hasn’t moved since.'},
+      {n:'04', when:'2022', title:'Long Island took notice', img:photos.hicksville, alt:'Peri-Peri Guys in Hicksville',
+       text:'The Hicksville location earned a spot on Newsday’s Top 100 Restaurants list, and in 2022, State Senator Kevin Thomas presented the founder with the New York State Empire Award. From Hicksville to Selden, the peri-peri fanbase on Long Island keeps growing.'}
+    ];
+    return `<section class="st-hero" style="--cover:url('${photos.hero}')">
+      <div class="st-hero-inner">
+        <p class="kicker">Our story</p>
+        <h1>A sauce born from <em>centuries</em> of tradition</h1>
+        <p class="st-lede">Peri-Peri Guys isn’t just a chicken spot — it’s the result of a centuries-old culinary journey, an unlikely friendship, and a stubborn refusal to settle for anything less than the world’s best peri-peri sauce.</p>
+      </div>
+      <dl class="st-facts">
+        <div><dt><strong data-count="500">500</strong></dt><dd>years of peri-peri history</dd></div>
+        <div><dt><strong data-count="24" data-suffix="+">24+</strong></dt><dd>hours marinated</dd></div>
+        <div><dt><strong>2020</strong></dt><dd>founded on Long Island</dd></div>
+        <div><dt><strong>Top 100</strong></dt><dd>Newsday restaurants</dd></div>
+      </dl>
+      <a class="hx-cue" href="#st-chapters" aria-label="Scroll to the story"><span></span></a>
+    </section>
+    <section class="st-chapters" id="st-chapters" aria-label="The Peri-Peri Guys story">
+      <div class="st-media" aria-hidden="true">${chapters.map((c,i)=>`<figure class="st-frame${i?'':' is-active'}" data-i="${i}">${picture(c.img,'')}<figcaption><span>${c.n}</span>${c.when}</figcaption></figure>`).join('')}</div>
+      <div class="st-text">${chapters.map((c,i)=>`<article class="st-ch" data-i="${i}">
+        <figure class="st-inline">${picture(c.img,c.alt)}</figure>
+        <p class="st-when"><span class="st-num">${c.n}</span>${c.when}</p>
+        <h2>${c.title}</h2><p>${c.text}</p></article>`).join('')}</div>
+    </section>
+    <blockquote class="st-quote"><p>“A stubborn refusal to settle for anything less than the <em>world’s best</em> peri-peri sauce.”</p><cite>— The Peri-Peri Guys promise</cite></blockquote>
+    <section class="wrap section st-founders" aria-labelledby="st-founders-title">
+      <h2 id="st-founders-title">The founders</h2>
+      <p class="st-sub">Two friends, one pick-up soccer game, and a shared obsession with proper peri-peri.</p>
+      <div class="st-people">
+        <article><span class="st-initials" aria-hidden="true">HR</span><h3>Hafeez Raja</h3><p class="st-role">From Glasgow to New York</p><p>Couldn’t find peri-peri up to his standards in New York, so he started shipping ingredients from the UK.</p></article>
+        <article><span class="st-initials" aria-hidden="true">GR</span><h3>Greg Raposo</h3><p class="st-role">New York native, Portuguese descent</p><p>Met Hafeez at a pick-up soccer game — and their partnership launched Peri-Peri Guys in 2020.</p></article>
+      </div>
+    </section>
+    <section class="wrap section st-awards" aria-labelledby="st-awards-title">
+      <h2 id="st-awards-title">Recognition</h2>
+      <div class="st-badges">
+        <article><span class="st-badge-mark" aria-hidden="true">★</span><h3>Newsday Top 100</h3><p>Hicksville earned a spot on Newsday’s Top 100 Restaurants list.</p></article>
+        <article><span class="st-badge-mark" aria-hidden="true">✦</span><h3>NY State Empire Award</h3><p>Presented to the founder by State Senator Kevin Thomas in 2022.</p></article>
+      </div>
+    </section>
+    <section class="st-cta"><h2>Taste the story</h2><p>Hicksville and Selden, Long Island.</p><div class="st-cta-actions">${link('Find a restaurant',page('locations'),'glow')}${openButton('Order online','order','ghost')}</div></section>`;
+  }
 };
 const params = new URLSearchParams(location.search);
 const requested = params.get('page');
 const current = Object.hasOwn(screens,requested) ? requested : 'home';
 document.body.dataset.page = current;
 document.querySelector('#main').innerHTML = screens[current]();
-if (current !== 'home') document.title = `${document.querySelector('h1').textContent} | Peri-Peri Guys`;
+if (current !== 'home') document.title = `${current === 'story' ? 'Our story' : document.querySelector('h1').textContent} | Peri-Peri Guys`;
 const activePage = document.querySelector(`header a[href="${page(current)}"]`);
 activePage?.setAttribute('aria-current','page');
 const footerBreakpoint = matchMedia('(max-width: 600px)');

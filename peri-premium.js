@@ -160,6 +160,20 @@
     }
   }
 
+  // Story page: sticky photo panel crossfades to the chapter being read.
+  {
+    const frames = [...document.querySelectorAll('.st-frame')], chs = [...document.querySelectorAll('.st-ch')];
+    if (frames.length && chs.length) {
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        if (!e.isIntersecting) return;
+        const i = e.target.dataset.i;
+        frames.forEach(f => f.classList.toggle('is-active', f.dataset.i === i));
+        chs.forEach(c => c.classList.toggle('is-current', c === e.target));
+      }), {rootMargin: '-45% 0px -45% 0px'});
+      chs.forEach(c => io.observe(c));
+    }
+  }
+
   // Header state + scroll progress.
   const progress = document.querySelector('.progress');
   const onScroll = () => {
@@ -289,7 +303,7 @@
   for (const a of document.querySelectorAll('.campaign-card .pill, .feature-actions .pill, .section-action .pill, .split-copy > .pill')) a.classList.add('arrow');
 
   // Scroll reveals with stagger.
-  const groups = ['.campaign-grid', '.feature-grid', '.category-grid', '.stats', '.listing', '.locations', '.heat'];
+  const groups = ['.campaign-grid', '.feature-grid', '.category-grid', '.stats', '.listing', '.locations', '.heat', '.st-people', '.st-badges'];
   const targets = [];
   for (const sel of groups) for (const g of document.querySelectorAll(sel)) [...g.children].forEach((c, k) => { c.classList.add('rv'); c.style.setProperty('--d', `${k * 80}ms`); targets.push(c); });
   for (const el of document.querySelectorAll('.feature-copy > *, .split, .location-feature-grid, .section > h2, .ticker, .split-h, .pr, .mega')) { if (!targets.includes(el)) { if (!el.matches('.split-h, .pr, .mega')) el.classList.add('rv'); targets.push(el); } }
