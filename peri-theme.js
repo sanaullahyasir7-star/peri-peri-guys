@@ -4,7 +4,7 @@
   const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const body = document.body;
 
-  // ---- Card details: "What's hot" badge on the items the site already promotes as hot ----
+  // ---- Card details: "What's hot" line on the items the site already promotes as hot ----
   const hot = ['2 Whole Chickens BOGO', 'The King Chicken Sandwich', '20 Peri-Wings'];
   for (const card of document.querySelectorAll('.dish')) {
     const title = card.querySelector('h3')?.textContent.trim();
@@ -14,9 +14,63 @@
     price.replaceWith(row); row.append(price);
     if (hot.includes(title)) {
       const b = document.createElement('span'); b.className = 'hot-badge';
-      b.innerHTML = '<i aria-hidden="true">🔥</i>What’s hot'; row.append(b);
+      b.innerHTML = '<i aria-hidden="true"></i>What’s hot'; row.after(b);
     }
   }
+
+  // ---- Campaign sections: copy + LEARN MORE under the headline, labels on card photos, card deck ----
+  const copy = {
+    flavor: 'Trade the ordinary for <strong>flame-grilled Zabiha Halal chicken</strong>, marinated for over 24 hours and basted in peri-peri made with African bird’s eye chili. Pick your sauce, bring your crew.',
+    hot: 'The specials and fan favourites everyone’s ordering right now at Hicksville and Selden.'
+  };
+  document.querySelectorAll('.campaign-band').forEach(band => {
+    const camp = band.querySelector('.campaign'), title = camp?.querySelector('.campaign-title'), grid = camp?.querySelector('.campaign-grid');
+    if (!camp || !title || !grid) return;
+    const isHot = band.classList.contains('hot');
+    const p = document.createElement('p'); p.className = 'camp-copy'; p.innerHTML = isHot ? copy.hot : copy.flavor;
+    title.after(p);
+    if (!isHot) { const a = document.createElement('a'); a.className = 'pill dark heart learn'; a.href = '?page=story'; a.textContent = 'Learn more'; p.after(a); }
+    for (const card of grid.children) {
+      const h = card.querySelector('h3'), img = card.querySelector('img, .img-ph');
+      if (h && img) { const l = document.createElement('span'); l.className = 'card-label'; l.setAttribute('aria-hidden', 'true'); l.textContent = h.textContent; img.after(l); }
+    }
+    // deck: one card in front, the rest stacked behind; auto-shuffles, click a back card or a dot to bring it forward
+    grid.classList.add('deck'); grid.removeAttribute('data-fan');
+    const cards = [...grid.children]; let order = cards.map((_, i) => i);
+    const nav = document.createElement('div'); nav.className = 'deck-nav';
+    nav.innerHTML = cards.map((c, i) => `<button type="button" aria-label="Show card ${i + 1} of ${cards.length}"></button>`).join('');
+    grid.after(nav);
+    const paint = () => {
+      order.forEach((ci, pos) => cards[ci].dataset.pos = pos);
+      [...nav.children].forEach((b, i) => b.setAttribute('aria-current', String(i === order[0])));
+      cards.forEach((c, i) => { const back = i !== order[0] && matchMedia('(min-width: 601px)').matches; c.toggleAttribute('aria-hidden', back); c.querySelectorAll('a, button').forEach(el => back ? el.setAttribute('tabindex', '-1') : el.removeAttribute('tabindex')); });
+    };
+    let busy = false;
+    const bringToFront = target => {
+      if (busy || order[0] === target) return; busy = true;
+      const front = cards[order[0]];
+      const finish = () => { front.classList.remove('fly'); order = [target, ...order.filter(i => i !== target)]; paint(); setTimeout(() => busy = false, 300); };
+      if (reduce) { finish(); return; }
+      front.classList.add('fly'); setTimeout(finish, 600);
+    };
+    const next = () => bringToFront(order[1]);
+    cards.forEach((c, i) => c.addEventListener('click', e => { if (order[0] !== i && matchMedia('(min-width: 601px)').matches) { e.preventDefault(); bringToFront(i); } }));
+    [...nav.children].forEach((b, i) => b.addEventListener('click', () => bringToFront(i)));
+    paint();
+    let timer, inView = false, hover = false;
+    const tick = () => { clearInterval(timer); if (!reduce) timer = setInterval(() => { if (inView && !hover && !document.hidden && matchMedia('(min-width: 601px)').matches) next(); }, 4200); };
+    new IntersectionObserver(([e]) => { inView = e.isIntersecting; }).observe(grid);
+    grid.addEventListener('pointerenter', () => hover = true); grid.addEventListener('pointerleave', () => hover = false);
+    grid.addEventListener('focusin', () => hover = true); grid.addEventListener('focusout', () => hover = false);
+    tick();
+  });
+
+  // ---- Full-bleed photo covers get a centred ORDER NOW, like Nando's video covers ----
+  document.querySelectorAll('.venue-cover').forEach(fig => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'cover-cta'; b.dataset.open = 'order'; b.textContent = 'Order now';
+    fig.append(b);
+  });
+  if (typeof photos !== 'undefined') document.querySelector('.story-feature')?.style.setProperty('--story-img', `url("${photos.story}")`);
 
   if (reduce) return;
 
@@ -59,7 +113,7 @@
   }
 
   // ---- Velocity marquee: speeds up / reverses with your scroll ----
-  const featured = document.querySelector('.featured');
+  const featured = document.querySelector('.categories');
   if (featured) {
     const strip = document.createElement('div'); strip.className = 'velo'; strip.setAttribute('aria-hidden', 'true');
     const run = '<span>Order now</span><b>🌶</b><span>Flame-grilled</span><b>🔥</b><span>Zabiha Halal</span><b>🌶</b><span>Marinated 24+ hrs</span><b>🔥</b>';
