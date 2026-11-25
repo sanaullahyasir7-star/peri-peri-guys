@@ -640,3 +640,48 @@ body.header-away .progress{opacity:.9}
 @media(prefers-reduced-motion:reduce){.hx-glow::before,.hx-glow::after,.shimmer::before,.mbar .mbar-main::after,.open-chip.is-open i{animation:none}}
 .heat-card>.heat-flame{position:absolute!important;z-index:0!important}
 .heat-card>.sr{position:absolute!important}
+
+/* ===================== SMOOTHNESS PASS ===================== */
+/* Lenis */
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:hidden}
+.lenis.lenis-smooth iframe{pointer-events:none}
+/* no fire effects, no flame cursor — fork stays on everything clickable */
+.hx-embers,.spark,.ember-trail{display:none!important}
+@media(hover:hover) and (pointer:fine){html,body{cursor:auto!important}}
+/* grain: static texture, no blend modes (blend layers force full-page repaints) */
+body::after{animation:none!important;mix-blend-mode:normal!important;opacity:.045!important;inset:0!important;background-size:220px!important;will-change:auto}
+.hx::after,.hot::after,.catering-feature::after,footer::after,.heat-card::after,.split-copy::after,.inner-hero::after{mix-blend-mode:normal!important;opacity:.07!important}
+/* light leaks + glow: soft gradients that only move (no blur filters) */
+.hx-glow{filter:none!important;background:radial-gradient(circle,#ff5a1f40,#d7261e1c 38%,transparent 66%)!important}
+.hx-glow::before{filter:none!important;mix-blend-mode:normal!important;opacity:1!important;background:radial-gradient(circle,#ffb54755,transparent 62%)!important}
+.hx-glow::after{filter:none!important;mix-blend-mode:normal!important;opacity:1!important;background:radial-gradient(circle,#d7261e4d,transparent 62%)!important}
+.heat-flame{filter:none!important;background:radial-gradient(circle,#ffb547cc 0,#ff5a1fa6 30%,#d7261e66 50%,transparent 70%)!important}
+/* frosted glass -> solid surfaces (backdrop blur recalculates on every scroll frame) */
+header,body.scrolled header{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body.scrolled header,body:not([data-page="home"]) header{background:#f7f0e6f7!important}
+.mbar{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#120d0bf7!important}
+.hx-eyebrow,.pill.ghost,.dish-media .details,.category-media .category-cta{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+dialog::backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#120d0bc7!important}
+/* scroll-in reveals: fade + slide only (animating blur is expensive) */
+.rv{filter:none!important;transition:opacity .9s var(--ease),translate .9s var(--ease)!important;transition-delay:var(--d,0ms)!important}
+/* keep only the cheap continuous animations */
+.hx-plate img{animation-duration:120s}
+.dish,.category-card{will-change:auto}
+@media(max-width:900px){.hx-glow::before,.hx-glow::after{animation:none}}
+/* biggest idle costs: spinning plate photo + breathing glow/leaks */
+.hx-plate img{animation:none!important;rotate:var(--plate-rot,0deg);transition:rotate .6s var(--ease)}
+.hx-glow,.hx-glow::before,.hx-glow::after{animation:none!important}
+.hx-glow::before{translate:12% -6%;scale:1.1}
+/* repaint-free versions of the always-on animations */
+.pill.glow{animation:none!important;box-shadow:0 14px 40px -12px #ff5a1fcc!important}
+.pill.glow{overflow:visible!important}
+.pill.glow::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 2px #ff5a1f99;opacity:0;animation:ring-out 2.8s ease-out infinite;pointer-events:none}
+@keyframes ring-out{0%{opacity:.9;transform:scale(1)}80%,100%{opacity:0;transform:scale(1.25,1.6)}}
+.stripe{animation:none!important;background-size:100% 100%!important}
+.open-chip.is-open i{animation:none!important;position:relative}
+.open-chip.is-open i::after{content:"";position:absolute;inset:0;border-radius:50%;background:#22b35e;animation:dot-ping 1.8s ease-out infinite}
+@keyframes dot-ping{0%{transform:scale(1);opacity:.7}80%,100%{transform:scale(2.6);opacity:0}}
+@media(prefers-reduced-motion:reduce){.pill.glow::after,.open-chip.is-open i::after{animation:none}}

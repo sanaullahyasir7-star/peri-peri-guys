@@ -135,6 +135,31 @@
     }, {passive: true});
   }
 
+  // Buttery smooth scrolling on mouse / trackpad devices (Lenis, vendored). Touch keeps native scrolling.
+  if (fine && !reduce && typeof Lenis !== 'undefined') {
+    const lenis = new Lenis({duration: 1.15, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true, wheelMultiplier: 1});
+    window.lenis = lenis;
+    const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+    // pause while a dialog is open so it can scroll on its own
+    const dialogEl = document.querySelector('#dialog');
+    if (dialogEl) new MutationObserver(() => dialogEl.open ? lenis.stop() : lenis.start()).observe(dialogEl, {attributes: true, attributeFilter: ['open']});
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a[href^="#"]'); if (!a) return;
+      const t = document.querySelector(a.getAttribute('href')); if (!t) return;
+      e.preventDefault(); lenis.scrollTo(t, {offset: -70});
+    });
+  }
+
+  // Hero plate turns with scroll instead of spinning all the time (no idle cost).
+  {
+    const plate = document.querySelector('.hx-plate img');
+    if (plate && !reduce) {
+      let raf = 0;
+      addEventListener('scroll', () => { if (raf || scrollY > innerHeight * 1.3) return; raf = requestAnimationFrame(() => { raf = 0; plate.style.setProperty('--plate-rot', `${(scrollY * .12).toFixed(1)}deg`); }); }, {passive: true});
+    }
+  }
+
   // Header state + scroll progress.
   const progress = document.querySelector('.progress');
   const onScroll = () => {
@@ -181,7 +206,8 @@
 
     // Rising embers.
     const canvas = hero.querySelector('.hx-embers');
-    if (canvas && !reduce) {
+    canvas?.remove();
+    if (false) {
       const ctx = canvas.getContext('2d');
       let w, h, dpr, parts = [], visible = true, raf;
       const size = () => {
@@ -258,7 +284,7 @@
     const mega = document.createElement('div'); mega.className = 'mega';
     mega.innerHTML = `<span class="mega-word" aria-hidden="true">Peri-Peri Guys</span><div class="mega-meta"><span>Hicksville · Selden · New York</span><span>Flame-grilled · Zabiha Halal</span><button type="button" class="to-top">Back to top ↑</button></div>`;
     end.before(mega);
-    mega.querySelector('.to-top').addEventListener('click', () => scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'}));
+    mega.querySelector('.to-top').addEventListener('click', () => (window.lenis ? window.lenis.scrollTo(0) : scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'})));
   }
   for (const a of document.querySelectorAll('.campaign-card .pill, .feature-actions .pill, .section-action .pill, .split-copy > .pill')) a.classList.add('arrow');
 
@@ -318,6 +344,7 @@
     frame();
     // 4) Tap sparks on buttons (the touch version of the flame cursor).
     document.addEventListener('pointerdown', e => {
+      return; // fire effects removed for smoothness
       const btn = e.target.closest('.pill, .mbar > *, .choice, .heat-float, .to-top'); if (!btn) return;
       for (let i = 0; i < 10; i++) {
         const s = document.createElement('i'); s.className = 'spark';
@@ -333,33 +360,6 @@
 
   if (!fine || reduce) return;
 
-  // Ember trail behind the flame cursor (desktop).
-  {
-    const cv = document.createElement('canvas'); cv.className = 'ember-trail'; cv.setAttribute('aria-hidden', 'true');
-    body.append(cv);
-    const ctx = cv.getContext('2d'); let w, h, dpr; const parts = [];
-    const size = () => { dpr = Math.min(devicePixelRatio || 1, 2); w = cv.width = innerWidth * dpr; h = cv.height = innerHeight * dpr; };
-    size(); addEventListener('resize', size);
-    let px = 0, py = 0, running = false;
-    const tick = () => {
-      ctx.clearRect(0, 0, w, h); ctx.globalCompositeOperation = 'lighter';
-      for (let i = parts.length - 1; i >= 0; i--) {
-        const p = parts[i]; p.x += p.vx; p.y += p.vy; p.vy -= .02 * dpr; p.life -= .028;
-        if (p.life <= 0) { parts.splice(i, 1); continue; }
-        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
-        g.addColorStop(0, `hsla(${p.hue},100%,62%,${p.life})`); g.addColorStop(1, `hsla(${p.hue},100%,50%,0)`);
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 3, 0, 7); ctx.fill();
-      }
-      if (parts.length) requestAnimationFrame(tick); else { running = false; ctx.clearRect(0, 0, w, h); }
-    };
-    addEventListener('pointermove', e => {
-      const dx = e.clientX - px, dy = e.clientY - py; px = e.clientX; py = e.clientY;
-      const n = Math.min(4, 1 + Math.hypot(dx, dy) / 14);
-      for (let i = 0; i < n; i++) parts.push({x: (px + 6) * dpr, y: (py + 6) * dpr, vx: (Math.random() - .5) * .8 * dpr, vy: (-Math.random() * 1.4 - .4) * dpr, life: 1, r: (Math.random() * 2.4 + 1.2) * dpr, hue: 15 + Math.random() * 30});
-      if (parts.length > 160) parts.splice(0, parts.length - 160);
-      if (!running) { running = true; requestAnimationFrame(tick); }
-    }, {passive:true});
-  }
 
 
   // 3D tilt + glare on cards.
