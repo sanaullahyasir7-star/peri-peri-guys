@@ -249,7 +249,7 @@ const requested = params.get('page');
 const current = Object.hasOwn(screens,requested) ? requested : 'home';
 document.body.dataset.page = current;
 document.querySelector('#main').innerHTML = screens[current]();
-if (current !== 'home') document.title = `${current === 'story' ? 'Our story' : current === 'locations' ? 'Locations' : current === 'catering' ? 'Catering' : document.querySelector('h1').textContent} | Peri-Peri Guys`;
+if (current !== 'home' && !window.PPG_TITLE) document.title = `${document.querySelector('h1').textContent} | Peri-Peri Guys`;
 const activePage = document.querySelector(`header a[href="${page(current)}"]`);
 activePage?.setAttribute('aria-current','page');
 const footerBreakpoint = matchMedia('(max-width: 600px)');

@@ -1128,3 +1128,18 @@ dialog[data-mode="dish"]{max-height:min(92svh,860px)}
   .ct-small{text-align:center}
 }
 .ct-done .pill.ghost{background:var(--ink);color:var(--cream);box-shadow:none}
+
+/* ===================== PAGE TRANSITIONS ===================== */
+/* Cross-document View Transitions (Chrome/Edge 126+, Safari 18.2+): header stays put, the page slides/fades. */
+@view-transition{navigation:auto}
+header{view-transition-name:site-header}
+.progress{view-transition-name:progress}
+.mbar{view-transition-name:mbar}
+::view-transition-old(root){animation:vt-out .32s cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:vt-in .55s cubic-bezier(.16,.85,.25,1) both}
+::view-transition-group(site-header),::view-transition-group(mbar){animation-duration:.4s}
+@keyframes vt-out{to{opacity:0;transform:translateY(-24px) scale(.985)}}
+@keyframes vt-in{from{opacity:0;transform:translateY(36px)}}
+/* browsers without cross-document transitions get a soft page-in */
+@supports not (view-transition-name:none){main{animation:vt-in .55s cubic-bezier(.16,.85,.25,1) both}}
+@media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}@view-transition{navigation:none}}
