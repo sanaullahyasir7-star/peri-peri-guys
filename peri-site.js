@@ -126,7 +126,7 @@ function home() {
   </section>
   <div id="after-hero" class="ticker" aria-hidden="true"><div class="ticker-track">${'<span>Zabiha Halal</span><i>✦</i><span>Marinated 24+ hours</span><i>✦</i><span>Flame-grilled to order</span><i>✦</i><span>African bird’s eye chili</span><i>✦</i><span>Hicksville · Selden</span><i>✦</i>'.repeat(4)}</div></div>
   <section class="wrap section heat" aria-labelledby="heat-title">
-    <div class="heat-copy"><p class="kicker">The heat scale</p><h2 id="heat-title" data-reveal>How hot do<br>you <em>go?</em></h2><p>Slide to find your peri-peri. Every bird is basted to order, so you choose the fire.</p></div>
+    <div class="heat-copy"><p class="kicker">The heat scale</p><h2 id="heat-title" data-reveal>How hot do<br>you <em>go?</em></h2><p>Slide to find your peri-peri. Every bird is basted to order, so you choose the fire.</p><button type="button" class="pill dark quiz-cta" data-open="quiz">Take the 30-second sauce quiz</button></div>
     <div class="heat-card" style="--heat:0">
       <div class="heat-flame" aria-hidden="true"></div>
       <output class="heat-name" id="heat-name" for="heat-range">${sauceList[0][0]}</output>
@@ -177,13 +177,7 @@ function inner(title, copy, src, body) {
 }
 
 function menu() {
-  return inner('Like it spicy?', 'Flame-grilled chicken, wings, sandwiches, bowls, and more.',photos.hero,`
-    <h2>Peri-Peri Guys menu</h2>
-    <div class="choices" role="group" aria-label="Menu categories">${['All', ...categories.map(([name]) => name)].map(name => `<button class="choice" type="button" data-filter="${name}" aria-pressed="false">${name}</button>`).join('')}</div>
-    <label class="menu-search">Search featured menu<input id="menu-search" type="search" placeholder="Try wings"></label>
-    <div class="listing" id="menu-dishes">${dishes.map(dishCard).join('')}</div>
-    <p id="menu-empty" role="status" hidden>No featured dishes match your search.</p>
-    <p class="section-action">${link('View full live menu',client + '/menu','dark')}</p>`);
+  return `<section class="mn-hero"><div class="mn-hero-inner"><p class="kicker">The menu</p><h1>Flame-grilled. <em>Your</em> heat.</h1><p>Zabiha Halal chicken, marinated for over 24 hours and basted in the peri-peri sauce you choose.</p></div></section><div id="menu-app"></div>`;
 }
 
 function storeCards(items = stores) {
@@ -331,7 +325,7 @@ const orderChoices = mode => `<div class="dialog-actions">${stores.map(store => 
 const dialogs = {
   navigation: () => title('Menu') + `<nav class="mobile-nav" aria-label="Mobile navigation">${navItems}<a href="${page('locations')}">Find a location</a><a href="${client}/login">Sign in</a></nav><div class="drawer-cta">${openButton('Order now','order','glow')}<p>Order with the app</p>${appStores}</div>`,
   order: () => title('Ready to order?') + `<p>Choose how you’d like to order, then select a location.</p><div class="choices" role="group" aria-label="Order method"><button class="choice" data-method="pickup" aria-pressed="true">Pickup</button><button class="choice" data-method="delivery" aria-pressed="false">Delivery</button>${link('Catering',client + '/catering')}</div><div id="order-choices">${orderChoices('pickup')}</div>`,
-  sauces: () => title('Find your peri-peri sauce') + `<div class="choices" role="group" aria-label="Sauce flavors">${sauceList.map(([name],index) => `<button class="choice" data-sauce="${index}" aria-pressed="${index === 0}">${name}</button>`).join('')}</div><p id="sauce-description" aria-live="polite">${sauceList[0][1]}</p>${link('View ordering menu',client + '/menu','dark')}`,
+  sauces: () => title('Find your peri-peri sauce') + `<div class="choices" role="group" aria-label="Sauce flavors">${sauceList.map(([name],index) => `<button class="choice" data-sauce="${index}" aria-pressed="${index === 0}">${name}</button>`).join('')}</div><p id="sauce-description" aria-live="polite">${sauceList[0][1]}</p><div class="dialog-actions">${openButton('Take the sauce quiz','quiz','glow')}${link('View the menu',page('menu'),'dark')}</div>`,
   welcome: () => title('Find your nearest Peri-Peri Guys') + `<p>Choose a restaurant to see its hours and start your order.</p><div class="welcome-actions">${openButton('Use my location','welcome-geo','dark')}<button type="button" class="plain" data-open="locations">Choose a location</button><button type="button" class="plain" data-open="dismiss">Maybe later</button></div>`,
   locations: () => title('Find your nearest Peri-Peri Guys') + `<div class="dialog-actions">${openButton('Use my location','geo')}${link('Browse locations',page('locations'),'dark')}</div><p id="location-status" role="status"></p><div id="dialog-stores">${storeCards()}</div>`
 };
@@ -372,6 +366,8 @@ document.addEventListener('click', event => {
     locate();
   } else if (open === 'geo') locate();
   else if (Object.hasOwn(dialogs,open)) show(dialogs[open](),open);
+  else if (open === 'quiz' && window.openQuiz) window.openQuiz();
+  else if (dish !== undefined && window.openDish) window.openDish(Number(dish));
   else if (dish !== undefined) {
     const item = dishes[Number(dish)];
     show(title(item.name) + `<p>${item.description}</p><p>$${item.price}</p>` + openButton('Order','order','dark'));
@@ -400,28 +396,6 @@ dialog.addEventListener('click', event => {
     if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
   }
 });
-
-if (current === 'menu') {
-  const search = document.querySelector('#menu-search');
-  const filters = [...document.querySelectorAll('[data-filter]')];
-  const cards = [...document.querySelectorAll('#menu-dishes [data-category]')];
-  let category = filters.find(button => button.dataset.filter === params.get('category'))?.dataset.filter || 'All';
-  function updateMenu() {
-    const query = search.value.trim().toLowerCase();
-    for (const button of filters) button.setAttribute('aria-pressed',String(button.dataset.filter === category));
-    for (const [index,card] of cards.entries()) {
-      const dish = dishes[index];
-      card.hidden = (category !== 'All' && dish.category !== category) || !`${dish.name} ${dish.description}`.toLowerCase().includes(query);
-    }
-    document.querySelector('#menu-empty').hidden = cards.some(card => !card.hidden);
-  }
-  for (const button of filters) button.addEventListener('click', () => {
-    category = button.dataset.filter;
-    updateMenu();
-  });
-  search.addEventListener('input',updateMenu);
-  updateMenu();
-}
 
 document.addEventListener('pointerdown', event => {
   const active = document.querySelector('.food-tile.touch-active');
