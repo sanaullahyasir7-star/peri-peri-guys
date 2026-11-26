@@ -36,8 +36,8 @@ const footerGroups = [
   ['Catering', `<a href="${page('catering')}">Catering menu</a>`],
   ['Rewards', `<a href="${page('rewards')}">How it works</a><a href="${client}/login">Sign in</a>`],
   ['Peri-Peri Sauces', '<button class="plain" type="button" data-open="sauces">Explore our sauces</button>'],
-  ['About Us', `<a href="${page('story')}">Our story</a><a href="${client}/gift-cards">Gift cards</a><a href="${client}/careers">Careers</a><a href="${client}/page/franchising">Franchising</a>`],
-  ['Find Us', `<a href="${page('locations')}">Restaurant locations</a><a href="mailto:info@periperiguys.com">Contact us</a>`]
+  ['About Us', `<a href="${page('story')}">Our story</a><a href="${page('giftcards')}">Gift cards</a><a href="${page('careers')}">We’re hiring</a><a href="${page('franchising')}">Franchising</a>`],
+  ['Find Us', `<a href="${page('locations')}">Restaurant locations</a><a href="${page('contact')}">Contact us</a>`]
 ];
 const dishes = [
   {name:'2 Whole Chickens BOGO',category:'Chicken',price:'36.99',photo:photos.bogo,description:'Whole flame-grilled peri chicken with your choice of sauce.'},
@@ -60,12 +60,14 @@ const sauceList = [
   ['Mild','A gentler peri-peri kick.'],['Hot','A hotter option for chili lovers.'],['Very Hot','The hottest option in this guide.']
 ];
 
-const navItems = `<a href="${page('menu')}">Menu</a><a href="${page('catering')}">Catering</a><a href="${page('rewards')}">Rewards</a><button class="plain" type="button" data-open="sauces">Peri-Peri Sauces</button><a href="${page('story')}">Our Story</a>`;
+const moreItems = `<a href="${page('rewards')}">Rewards</a><button class="plain" type="button" data-open="sauces">Peri-Peri Sauces</button><a href="${page('locations')}">Locations</a><a href="${page('franchising')}">Franchising</a><a href="${page('contact')}">Contact</a>`;
+const navItems = `<a href="${page('menu')}">Menu</a><a href="${page('catering')}">Catering</a><a href="${page('story')}">Our Story</a><a href="${page('giftcards')}">Gift Cards</a><a href="${page('careers')}">We’re Hiring</a>`;
+const navDesktop = `${navItems}<div class="nav-more"><button class="plain nav-more-btn" type="button" aria-expanded="false" aria-controls="nav-more-menu">More <span aria-hidden="true">▾</span></button><div class="nav-more-menu" id="nav-more-menu" hidden>${moreItems}</div></div>`;
 document.querySelector('#header').innerHTML = `
   <a class="logo-link" href="?" aria-label="Peri-Peri Guys home"><span class="logo-mark">${picture(photos.logo,'',true)}</span><span class="logo-name">Peri-Peri Guys</span></a>
-  <nav class="nav" aria-label="Main navigation">${navItems}</nav>
-  <div class="account"><button class="plain" type="button" data-open="locations">Find a location</button><a href="${client}/login">Sign in</a><a href="${page('rewards')}">Join</a></div>
-  ${openButton('Order now','order','order-float')}
+  <nav class="nav" aria-label="Main navigation">${navDesktop}</nav>
+  <div class="account"><a href="${client}/login">Sign in</a></div>
+  ${openButton('Order online','order','order-float')}
   <button class="mobile-toggle" type="button" aria-label="Open menu" aria-haspopup="dialog" data-open="navigation"><span aria-hidden="true">☰</span></button>`;
 
 document.querySelector('#footer').innerHTML = `${stripe}<div class="wrap">
@@ -180,6 +182,46 @@ function menu() {
   return `<section class="mn-hero"><div class="mn-hero-inner"><p class="kicker">The menu</p><h1>Flame-grilled. <em>Your</em> heat.</h1><p>Zabiha Halal chicken, marinated for over 24 hours and basted in the peri-peri sauce you choose.</p></div></section><div id="menu-app"></div>`;
 }
 
+function hero(kicker, h1, lede, actions = '') {
+  return `<section class="pg-hero"><div class="pg-hero-in"><p class="kicker">${kicker}</p><h1>${h1}</h1><p class="pg-lede">${lede}</p>${actions ? `<div class="pg-cta">${actions}</div>` : ''}</div></section>`;
+}
+const pageCards = items => `<div class="pg-cards">${items.map(([icon, t, d]) => `<article><span class="pg-ic" aria-hidden="true">${icon}</span><h3>${t}</h3><p>${d}</p></article>`).join('')}</div>`;
+function giftcards() {
+  return hero('Gift cards', 'Give the gift of <em>peri-peri.</em>', 'A Peri-Peri Guys gift card is the easy present for birthdays, holidays, thank-yous and the friend who always says “I don’t mind, you pick.”',
+      link('Buy a gift card', client + '/gift-cards', 'glow')) + `
+    <section class="wrap section gc">
+      <div class="gc-card" aria-hidden="true"><div class="gc-in"><span class="gc-logo">PERI-PERI GUYS</span><span class="gc-chip"></span><span class="gc-word">GIFT CARD</span><span class="gc-flame"></span><span class="gc-tag">It’s all about the sauce.</span></div></div>
+      <div class="gc-copy"><h2>How it works</h2>
+        ${pageCards([['1', 'Choose an amount', 'Pick the value and add a personal message.'], ['2', 'Send it', 'Have it delivered by email, or print it to give in person.'], ['3', 'They enjoy', 'Flame-grilled chicken in the sauce they love.']])}
+        <p class="pg-note">Gift cards are sold through our online store. ${link('Buy a gift card', client + '/gift-cards', 'dark')}</p></div>
+    </section>
+    <section class="wrap section pg-occasions"><h2>Perfect for</h2><div class="pg-chips">${['Birthdays', 'Holidays', 'Thank-yous', 'Teachers', 'Coworkers', 'Game day', 'Just because'].map(x => `<span>${x}</span>`).join('')}</div></section>`;
+}
+function careers() {
+  return hero('We’re hiring', 'Join the <em>crew.</em>', 'We’re growing across Long Island and looking for people who care about great food and great service.',
+      link('See open roles & apply', client + '/careers', 'glow') + `<a class="pill ghost" href="${page('contact')}">Ask a question</a>`) + `
+    <section class="wrap section"><h2>Why Peri-Peri Guys</h2>
+      ${pageCards([['🔥', 'Food we’re proud of', 'Zabiha Halal chicken, marinated over 24 hours and flame-grilled to order.'], ['📈', 'A growing brand', 'From Hicksville in 2020 to Selden — and the fanbase keeps growing.'], ['🏆', 'Recognised quality', 'Newsday Top 100 Restaurants and a New York State Empire Award.']])}
+    </section>
+    <section class="wrap section"><h2>Where you could work</h2><div class="pg-stores">${stores.map(s => `<article><h3>${s.name}</h3><p>${s.address}</p><a href="tel:${s.tel}">${s.phone}</a></article>`).join('')}</div>
+      <p class="pg-note">Applications are handled through our careers page. ${link('Apply now', client + '/careers', 'dark')}</p></section>`;
+}
+function franchising() {
+  return hero('Franchising', 'Bring the <em>sauce</em> to your town.', 'Interested in opening a Peri-Peri Guys? Here’s what you’d be building on.',
+      link('Franchise information', client + '/page/franchising', 'glow') + `<a class="pill ghost" href="mailto:info@periperiguys.com?subject=Franchise%20enquiry">Email us</a>`) + `
+    <section class="wrap section"><h2>The brand</h2>
+      ${pageCards([['🌶️', 'A 500-year sauce', 'Peri-peri rooted in a journey from Mozambique to Portugal and beyond.'], ['🍗', 'A clear standard', 'Organic, steroid-free, Zabiha Halal chicken, marinated 24+ hours.'], ['⭐', 'Proven on Long Island', 'Newsday Top 100 and a 2022 New York State Empire Award.']])}
+    </section>
+    <section class="pg-band"><div class="wrap"><h2>Start the conversation</h2><p>Tell us where you’d like to open and a little about yourself. We’ll take it from there.</p><div class="pg-cta">${link('Franchise information', client + '/page/franchising', 'glow')}<a class="pill ghost" href="mailto:info@periperiguys.com?subject=Franchise%20enquiry">info@periperiguys.com</a></div></div></section>`;
+}
+function contact() {
+  return hero('Contact', 'Say <em>hello.</em>', 'Questions, feedback or a big order? Call your nearest restaurant or drop us an email.') + `
+    <section class="wrap section"><div class="pg-contact">
+      ${stores.map(s => `<article class="location-card"><h3>${s.name}</h3><address>${s.address}</address><div class="pg-contact-actions"><a class="pill glow" href="tel:${s.tel}">Call ${s.phone}</a><a class="pill ghost" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(s.address)}" target="_blank" rel="noopener">Directions ↗</a></div><p class="pg-hours">${s.hours}</p></article>`).join('')}
+      <article class="pg-mail"><h3>Email</h3><p>General questions and feedback</p><a class="pill dark" href="mailto:info@periperiguys.com">info@periperiguys.com</a><p class="pg-small">Planning an event? Use the <a href="${page('catering')}#cater-form">catering request form</a>.</p></article>
+    </div></section>`;
+}
+
 function storeCards(items = stores) {
   return `<div class="locations">${items.map(store => `<article class="location-card"><h3>${store.name}</h3><address>${store.address}</address><p><a href="tel:${store.tel}">${store.phone}</a></p><details><summary>Opening hours</summary><p>${store.hours}</p></details><p><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.address)}">Directions</a></p>${link('Order ' + store.name,client + '/menu/' + store.slug,'dark')}</article>`).join('')}</div>`;
 }
@@ -187,10 +229,21 @@ function storeCards(items = stores) {
 const screens = {
   home,
   menu,
+  giftcards,
+  careers,
+  franchising,
+  contact,
   catering: () => `<section class="ct-hero"><div class="ct-hero-inner"><p class="kicker">Catering</p><h1>Feed the <em>whole</em> crew.</h1><p>Whole flame-grilled chickens, sharing platters and sides for office lunches, birthdays and game day. Tell us about your event and we’ll get back to you with a plan.</p><div class="ct-hero-cta"><a class="pill glow" href="#cater-form">Request catering</a><a class="pill ghost" href="${client}/catering">Order catering online</a></div></div></section>
     <section class="wrap section ct-occasions"><div class="occasion-grid">${[[photos.sandwich,'Office lunches'],[photos.whole,'Family gatherings'],[photos.wings,'Game day']].map(([src,name])=>`<article>${picture(src)}<h3>${name}</h3></article>`).join('')}</div></section>
     <div id="cater-app"></div>`,
-  rewards: () => inner('Peri-Peri Guys Rewards','Earn points when you order online.',photos.rewards,`<div class="reward-steps"><article><h2>Join</h2><p>Sign in or create your rewards account.</p></article><article><h2>Earn</h2><p>Collect points on online orders.</p></article><article><h2>Redeem</h2><p>Use your points for food.</p></article></div><div class="page-intro">${link('Join or sign in',client + '/login')}<h2>Rewards questions</h2><details><summary>Where can I see my rewards?</summary><p>Sign in to your Peri-Peri Guys account to see your points and available rewards.</p></details><details><summary>Can I order in the app?</summary><p>Download the restaurant app to get started.</p>${appStores}</details></div>`),
+  rewards: () => hero('Peri-Peri Guys Rewards', 'Order. Earn. <em>Eat.</em>', 'Join Peri-Peri Guys Rewards, earn points when you order online, and redeem them for food.', link('Join or sign in', client + '/login', 'glow') + appStores) + `
+    <section class="wrap section"><h2>How it works</h2>${pageCards([['1', 'Join', 'Sign in or create your rewards account.'], ['2', 'Earn', 'Collect points every time you order online.'], ['3', 'Redeem', 'Use your points for food.']])}</section>
+    <section class="pg-band"><div class="wrap"><h2>Order with the app</h2><p>Find your location and order pickup or delivery from your phone.</p>${appStores}</div></section>
+    <section class="wrap section pg-faq"><h2>Questions</h2>
+      <details><summary>Where can I see my rewards?</summary><p>Sign in to your Peri-Peri Guys account to see your points and available rewards.</p></details>
+      <details><summary>Can I order in the app?</summary><p>Yes — download the Peri-Peri Guys app to order pickup or delivery.</p></details>
+      <details><summary>Do points work at both locations?</summary><p>Sign in when you order online at Hicksville or Selden to collect points on your account.</p></details>
+    </section>`,
   locations: () => `<section class="lc-hero"><div class="lc-hero-inner"><p class="kicker">Find us</p><h1>Two kitchens. <em>One</em> sauce.</h1><p>Hicksville and Selden, Long Island. Dine in, pick up, or get it delivered.</p></div></section><div id="loc-app"></div>`,
   story: () => {
     const chapters = [
@@ -250,7 +303,19 @@ const current = Object.hasOwn(screens,requested) ? requested : 'home';
 document.body.dataset.page = current;
 document.querySelector('#main').innerHTML = screens[current]();
 if (current !== 'home' && !window.PPG_TITLE) document.title = `${document.querySelector('h1').textContent} | Peri-Peri Guys`;
-const activePage = document.querySelector(`header a[href="${page(current)}"]`);
+const activePage = document.querySelector(`header .nav a[href="${page(current)}"]`);
+{
+  const more = document.querySelector('.nav-more'), btn = more?.querySelector('.nav-more-btn'), menu = more?.querySelector('.nav-more-menu');
+  if (more) {
+    if (menu.querySelector(`a[href="${page(current)}"]`)) btn.classList.add('is-current');
+    const set = open => { btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open; };
+    btn.addEventListener('click', e => { e.stopPropagation(); set(menu.hidden); if (!menu.hidden) menu.querySelector('a,button')?.focus(); });
+    document.addEventListener('click', e => { if (!more.contains(e.target)) set(false); });
+    more.addEventListener('keydown', e => { if (e.key === 'Escape') { set(false); btn.focus(); } });
+    menu.addEventListener('click', e => { if (e.target.closest('button')) set(false); });
+    more.addEventListener('focusout', e => { if (!more.contains(e.relatedTarget)) set(false); });
+  }
+}
 activePage?.setAttribute('aria-current','page');
 const footerBreakpoint = matchMedia('(max-width: 600px)');
 function syncFooter() {
@@ -325,7 +390,7 @@ const content = document.querySelector('#dialog-content');
 const title = text => `<h2 id="dialog-title">${text}</h2>`;
 const orderChoices = mode => `<div class="dialog-actions">${stores.map(store => link(store.name,client + '/menu/' + store.slug,'dark')).join('')}</div><p>Choose ${mode === 'delivery' ? 'delivery' : 'pickup'} in the ordering menu.</p>`;
 const dialogs = {
-  navigation: () => title('Menu') + `<nav class="mobile-nav" aria-label="Mobile navigation">${navItems}<a href="${page('locations')}">Find a location</a><a href="${client}/login">Sign in</a></nav><div class="drawer-cta">${openButton('Order now','order','glow')}<p>Order with the app</p>${appStores}</div>`,
+  navigation: () => title('Menu') + `<nav class="mobile-nav" aria-label="Mobile navigation">${navItems}${moreItems}<a href="${client}/login">Sign in</a></nav><div class="drawer-cta">${openButton('Order now','order','glow')}<p>Order with the app</p>${appStores}</div>`,
   order: () => title('Ready to order?') + `<p>Choose how you’d like to order, then select a location.</p><div class="choices" role="group" aria-label="Order method"><button class="choice" data-method="pickup" aria-pressed="true">Pickup</button><button class="choice" data-method="delivery" aria-pressed="false">Delivery</button>${link('Catering',client + '/catering')}</div><div id="order-choices">${orderChoices('pickup')}</div>`,
   sauces: () => title('Find your peri-peri sauce') + `<div class="choices" role="group" aria-label="Sauce flavors">${sauceList.map(([name],index) => `<button class="choice" data-sauce="${index}" aria-pressed="${index === 0}">${name}</button>`).join('')}</div><p id="sauce-description" aria-live="polite">${sauceList[0][1]}</p><div class="dialog-actions">${openButton('Take the sauce quiz','quiz','glow')}${link('View the menu',page('menu'),'dark')}</div>`,
   welcome: () => title('Find your nearest Peri-Peri Guys') + `<p>Choose a restaurant to see its hours and start your order.</p><div class="welcome-actions">${openButton('Use my location','welcome-geo','dark')}<button type="button" class="plain" data-open="locations">Choose a location</button><button type="button" class="plain" data-open="dismiss">Maybe later</button></div>`,
