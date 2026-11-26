@@ -189,7 +189,7 @@ const screens = {
   menu,
   catering: () => inner('Catering for any occasion','Bring flame-grilled peri-peri to the table.',photos.catering,`<div class="page-intro"><h2>Feed the whole crew</h2><p>Choose whole chickens, sharing platters, and sides for your group.</p>${link('Order catering',client + '/catering')}</div><div class="occasion-grid">${[[photos.sandwich,'Office lunches'],[photos.whole,'Family gatherings'],[photos.wings,'Game day']].map(([src,name])=>`<article>${picture(src)}<h3>${name}</h3></article>`).join('')}</div><div class="page-intro"><h2>Catering questions?</h2>${link('Contact a restaurant',page('locations'),'dark')}</div>`),
   rewards: () => inner('Peri-Peri Guys Rewards','Earn points when you order online.',photos.rewards,`<div class="reward-steps"><article><h2>Join</h2><p>Sign in or create your rewards account.</p></article><article><h2>Earn</h2><p>Collect points on online orders.</p></article><article><h2>Redeem</h2><p>Use your points for food.</p></article></div><div class="page-intro">${link('Join or sign in',client + '/login')}<h2>Rewards questions</h2><details><summary>Where can I see my rewards?</summary><p>Sign in to your Peri-Peri Guys account to see your points and available rewards.</p></details><details><summary>Can I order in the app?</summary><p>Download the restaurant app to get started.</p>${appStores}</details></div>`),
-  locations: () => inner('Find a Peri-Peri Guys','Hicksville and Selden, New York.',photos.hero,`<div class="finder-heading"><h2>Our restaurants</h2>${openButton('Find the closest location','locations','dark')}</div>${storeCards()}`),
+  locations: () => `<section class="lc-hero"><div class="lc-hero-inner"><p class="kicker">Find us</p><h1>Two kitchens. <em>One</em> sauce.</h1><p>Hicksville and Selden, Long Island. Dine in, pick up, or get it delivered.</p></div></section><div id="loc-app"></div>`,
   story: () => {
     const chapters = [
       {n:'01', when:'15th century', title:'The sauce has a 500-year history', img:photos.story, alt:'African bird’s eye chilies and peri-peri sauce',
@@ -247,7 +247,7 @@ const requested = params.get('page');
 const current = Object.hasOwn(screens,requested) ? requested : 'home';
 document.body.dataset.page = current;
 document.querySelector('#main').innerHTML = screens[current]();
-if (current !== 'home') document.title = `${current === 'story' ? 'Our story' : document.querySelector('h1').textContent} | Peri-Peri Guys`;
+if (current !== 'home') document.title = `${current === 'story' ? 'Our story' : current === 'locations' ? 'Locations' : document.querySelector('h1').textContent} | Peri-Peri Guys`;
 const activePage = document.querySelector(`header a[href="${page(current)}"]`);
 activePage?.setAttribute('aria-current','page');
 const footerBreakpoint = matchMedia('(max-width: 600px)');
